@@ -7,18 +7,37 @@ export const metadata: Metadata = {
   title: 'Free 3D Logo Maker | Create Professional 3D Logos Online - 3DLogo.io',
   description: 'Create stunning 3D logos instantly with our free online logo maker. Choose from premium materials like chrome, gold, and cosmic gradients. Real-time preview, professional export options, and no design skills required. Start creating your 3D logo now!',
   keywords: '3D logo maker, online logo creator, free logo design, 3D logo generator, professional logos, chrome logos, gold logos, animated logos, logo export, business branding, logo design tool, 3D text maker, custom logos',
+  authors: [{ name: '3DLogo.io' }],
+  creator: '3DLogo.io',
+  publisher: '3DLogo.io',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   alternates: {
     canonical: 'https://3dlogo.io',
   },
   openGraph: {
     title: 'Free 3D Logo Maker | Create Professional 3D Logos Online',
     description: 'Transform your ideas into stunning 3D logos with premium materials, real-time preview, and professional export options. No design skills needed!',
+    url: 'https://3dlogo.io',
+    siteName: '3DLogo.io',
+    type: 'website',
+    locale: 'en_US',
     images: [
       {
         url: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1200&h=630&fit=crop&auto=format',
         width: 1200,
         height: 630,
         alt: '3DLogo.io - Professional 3D Logo Creator',
+        type: 'image/jpeg',
       },
     ],
   },
@@ -26,8 +45,20 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Free 3D Logo Maker | Create Professional 3D Logos Online',
     description: 'Transform your ideas into stunning 3D logos with premium materials and real-time preview. Start creating now!',
+    site: '@3DLogoIO',
+    creator: '@3DLogoIO',
     images: ['https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1200&h=630&fit=crop&auto=format'],
   },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  verification: {
+    google: 'verification-code-here',
+    yandex: 'verification-code-here',
+  },
+  category: 'technology',
 };
 
 export default function Home() {
@@ -36,6 +67,8 @@ export default function Home() {
       <StructuredData type="WebApplication" />
       <StructuredData type="Organization" />
       <StructuredData type="FAQPage" />
+      <StructuredData type="HowTo" />
+      <StructuredData type="BreadcrumbList" />
       <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-black dark:to-blue-900">
       {/* Hero Section */}
       <section className="relative overflow-hidden" aria-labelledby="hero-heading">
@@ -55,7 +88,8 @@ export default function Home() {
               <Link
                 href="/editor"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                aria-label="Start creating your 3D logo"
+                aria-label="Start creating your 3D logo - Open free editor"
+                title="Create 3D Logo - Free Online Editor"
               >
                 Start Creating Free
               </Link>
@@ -75,9 +109,10 @@ export default function Home() {
                 {/* Placeholder 3D effect image */}
                 <Image
                   src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=600&fit=crop&auto=format"
-                  alt="3D Logo Preview"
+                  alt="Interactive 3D logo creator preview showing real-time editing capabilities"
                   fill
                   className="object-cover opacity-30"
+                  priority
                 />
                 <div className="relative z-10 p-8 min-h-[400px] flex items-center justify-center">
                   <div className="text-center">
@@ -93,6 +128,7 @@ export default function Home() {
                     <Link
                       href="/editor"
                       className="inline-block mt-4 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                      title="Try the live 3D logo editor"
                     >
                       Try Live Editor →
                     </Link>
@@ -116,8 +152,8 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8" role="list">
-            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800" role="listitem">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <span className="text-blue-600 dark:text-blue-400 font-bold">🎨</span>
               </div>
@@ -129,7 +165,7 @@ export default function Home() {
               </p>
             </article>
             
-            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800" role="listitem">
+            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800">
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <span className="text-green-600 dark:text-green-400 font-bold">⚡</span>
               </div>
@@ -141,7 +177,7 @@ export default function Home() {
               </p>
             </article>
             
-            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800" role="listitem">
+            <article className="text-center p-6 rounded-xl bg-gray-50 dark:bg-gray-800">
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4 mx-auto">
                 <span className="text-purple-600 dark:text-purple-400 font-bold">📤</span>
               </div>
@@ -174,9 +210,10 @@ export default function Home() {
                 <div className="relative w-16 h-16 mb-4">
                   <Image
                     src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=100&h=100&fit=crop&auto=format"
-                    alt="Upload step"
+                    alt="Step 1: Upload your logo or create from text"
                     fill
                     className="rounded-full object-cover opacity-20"
+                    loading="lazy"
                   />
                   <div className="relative w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
                     1
@@ -258,14 +295,15 @@ export default function Home() {
               { material: 'Holographic', gradient: 'from-pink-400 to-purple-600', image: 'https://images.unsplash.com/photo-1618172193763-c511deb635ca?w=400&h=400&fit=crop&auto=format' },
               { material: 'Metal', gradient: 'from-slate-400 to-slate-600', image: 'https://images.unsplash.com/photo-1606318801954-d46d46d3360a?w=400&h=400&fit=crop&auto=format' },
               { material: 'Rainbow', gradient: 'from-red-500 via-yellow-500 to-blue-500', image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?w=400&h=400&fit=crop&auto=format' },
-            ].map((item, index) => (
-              <div key={index} className="group cursor-pointer">
+            ].map((item) => (
+              <div key={item.material} className="group cursor-pointer">
                 <div className={`relative aspect-square rounded-xl bg-gradient-to-br ${item.gradient} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden`}>
                   <Image
                     src={item.image}
-                    alt={`${item.material} style 3D logo example`}
+                    alt={`${item.material} style 3D logo example showcasing premium material effects and professional design`}
                     fill
                     className="object-cover mix-blend-overlay opacity-50"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-white font-bold text-2xl drop-shadow-2xl">LOGO</span>
@@ -282,6 +320,7 @@ export default function Home() {
             <Link
               href="/editor"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+              title="Create your own 3D logo with custom materials"
             >
               Create Your Own
             </Link>
@@ -303,9 +342,9 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
-              <div className="flex mb-4">
+              <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-sarah-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -316,10 +355,11 @@ export default function Home() {
               <div className="flex items-center">
                 <Image
                   src="https://i.pravatar.cc/150?img=1"
-                  alt="Sarah Chen"
+                  alt="Sarah Chen - Tech Startup Founder testimonial"
                   width={40}
                   height={40}
                   className="rounded-full mr-3"
+                  loading="lazy"
                 />
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Sarah Chen</p>
@@ -329,9 +369,9 @@ export default function Home() {
             </div>
             
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
-              <div className="flex mb-4">
+              <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-mike-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -342,10 +382,11 @@ export default function Home() {
               <div className="flex items-center">
                 <Image
                   src="https://i.pravatar.cc/150?img=3"
-                  alt="Mike Rodriguez"
+                  alt="Mike Rodriguez - Creative Director testimonial"
                   width={40}
                   height={40}
                   className="rounded-full mr-3"
+                  loading="lazy"
                 />
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Mike Rodriguez</p>
@@ -355,9 +396,9 @@ export default function Home() {
             </div>
             
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
-              <div className="flex mb-4">
+              <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-emma-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -368,10 +409,11 @@ export default function Home() {
               <div className="flex items-center">
                 <Image
                   src="https://i.pravatar.cc/150?img=5"
-                  alt="Emma Thompson"
+                  alt="Emma Thompson - E-commerce Owner testimonial"
                   width={40}
                   height={40}
                   className="rounded-full mr-3"
+                  loading="lazy"
                 />
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-white">Emma Thompson</p>
@@ -418,8 +460,8 @@ export default function Home() {
                     'No watermarks',
                     'Commercial usage rights',
                     'No sign-up required',
-                  ].map((feature, index) => (
-                    <li key={index} className="flex items-start">
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-start">
                       <svg className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -432,6 +474,7 @@ export default function Home() {
                   <Link
                     href="/editor"
                     className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+                    title="Start creating your free 3D logo now"
                   >
                     Start Creating Now
                   </Link>
@@ -477,8 +520,8 @@ export default function Home() {
                 question: 'Can I edit my logo after exporting?',
                 answer: 'While exported files cannot be re-imported for editing, you can always recreate and modify your logo design as many times as you want using our editor.',
               },
-            ].map((item, index) => (
-              <div key={index} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+            ].map((item) => (
+              <div key={item.question} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   {item.question}
                 </h3>
@@ -531,6 +574,7 @@ export default function Home() {
             href="/editor"
             className="inline-block bg-white text-blue-600 px-10 py-4 rounded-xl text-lg font-bold hover:bg-gray-100 transition-colors shadow-xl"
             aria-label="Start creating your free 3D logo now"
+            title="Begin creating your professional 3D logo for free"
           >
             Start Creating - It&#39;s Free!
           </Link>
