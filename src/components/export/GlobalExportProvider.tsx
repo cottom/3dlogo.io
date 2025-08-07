@@ -112,6 +112,9 @@ export function GlobalExportProvider({ children }: { children: React.ReactNode }
         result = await exporter.exportOBJ(logoMesh, options, handleProgress);
       } else if (options.format === 'png' || options.format === 'jpg') {
         result = await exporter.exportImage(options, handleProgress);
+      } else if (options.format === 'mp4') {
+        // Video export with default 5 second duration at 30fps
+        result = await exporter.exportVideo(5, 30, options, handleProgress);
       } else {
         throw new Error(`Unsupported export format: ${options.format}`);
       }

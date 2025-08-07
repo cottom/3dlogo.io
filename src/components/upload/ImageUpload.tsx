@@ -255,25 +255,25 @@ export default function ImageUpload({
 
   const getStageIcon = () => {
     if (state.error) {
-      return <AlertCircle className="w-8 h-8 text-red-500" />;
+      return <AlertCircle className="w-6 h-6 text-red-500" />;
     }
     
     if (state.processingStep === 'complete') {
-      return <CheckCircle className="w-8 h-8 text-green-500" />;
+      return <CheckCircle className="w-6 h-6 text-green-500" />;
     }
 
     if (state.isProcessing) {
       switch (state.processingStep) {
         case 'image-processing':
-          return <ImageIcon className="w-8 h-8 text-blue-500 animate-pulse" />;
+          return <ImageIcon className="w-6 h-6 text-blue-500 animate-pulse" />;
         case 'svg-conversion':
-          return <FileText className="w-8 h-8 text-purple-500 animate-pulse" />;
+          return <FileText className="w-6 h-6 text-purple-500 animate-pulse" />;
         default:
-          return <Upload className="w-8 h-8 text-blue-500 animate-pulse" />;
+          return <Upload className="w-6 h-6 text-blue-500 animate-pulse" />;
       }
     }
 
-    return <Upload className="w-8 h-8 text-gray-400" />;
+    return <Upload className="w-6 h-6 text-gray-400" />;
   };
 
   const getProgressColor = () => {
@@ -295,7 +295,7 @@ export default function ImageUpload({
       {/* Main Upload Area */}
       <div
         className={`
-          relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200
+          relative border border-dashed rounded-md p-3 text-center transition-all duration-200
           ${state.isDragOver 
             ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
             : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
@@ -319,7 +319,7 @@ export default function ImageUpload({
           disabled={disabled || state.isProcessing}
         />
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {/* Icon */}
           <div className="flex justify-center">
             {getStageIcon()}
@@ -327,76 +327,82 @@ export default function ImageUpload({
 
           {/* Content */}
           {state.isProcessing ? (
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-gray-900 dark:text-white">
                   {state.stage}
                 </p>
                 
                 {/* Progress Bar */}
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                   <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${getProgressColor()}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${getProgressColor()}`}
                     style={{ width: `${state.progress}%` }}
                   />
                 </div>
                 
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-[10px] text-gray-500 dark:text-gray-400">
                   {Math.round(state.progress)}% complete
                 </p>
               </div>
             </div>
           ) : state.error ? (
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-red-600 dark:text-red-400">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-red-600 dark:text-red-400">
                 Upload Failed
               </p>
-              <p className="text-xs text-red-500 dark:text-red-400">
+              <p className="text-[10px] text-red-500 dark:text-red-400">
                 {state.error}
               </p>
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   resetState();
                 }}
-                className="inline-flex items-center px-3 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
               >
                 Try Again
               </button>
             </div>
           ) : state.processingStep === 'complete' && state.uploadedFile ? (
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-green-600 dark:text-green-400">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-green-600 dark:text-green-400">
                 Upload Complete!
               </p>
-              <p className="text-xs text-gray-600 dark:text-gray-300">
+              <p className="text-[10px] text-gray-600 dark:text-gray-300">
                 {state.uploadedFile.name} converted to 3D logo
               </p>
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   resetState();
                 }}
-                className="inline-flex items-center px-3 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
                 <X className="w-3 h-3 mr-1" />
                 Upload New
               </button>
             </div>
           ) : (
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Drag and drop your image or
+            <div className="space-y-1">
+              <p className="text-xs text-gray-600 dark:text-gray-300">
+                Drag and drop or click
               </p>
               <button 
                 type="button" 
-                className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
+                className="bg-gray-900 dark:bg-gray-700 text-white px-3 py-1.5 rounded text-xs hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
                 disabled={disabled}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                }}
               >
                 Upload Image
               </button>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Supports PNG, JPG, JPEG, GIF (max 10MB)
+              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                PNG, JPG, GIF (max 10MB)
               </p>
             </div>
           )}

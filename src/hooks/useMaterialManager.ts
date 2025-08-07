@@ -7,9 +7,10 @@ export function useMaterialManager() {
   const managerRef = useRef<MaterialManager>(MaterialManager.getInstance());
 
   useEffect(() => {
+    const manager = managerRef.current;
     return () => {
       // Cleanup on unmount
-      managerRef.current.clearCache();
+      manager.clearCache();
     };
   }, []);
 

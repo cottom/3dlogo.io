@@ -3,6 +3,16 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
 import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
 
+// Extend Window interface for MediaRecorder types
+declare global {
+  interface Window {
+    MediaRecorder: any;
+  }
+  interface HTMLCanvasElement {
+    captureStream(frameRate?: number): MediaStream;
+  }
+}
+
 export interface ExportOptions {
   format: 'gltf' | 'glb' | 'stl' | 'obj' | 'png' | 'jpg' | 'mp4';
   quality?: number;
@@ -125,28 +135,32 @@ export class LogoExporter {
 
         onProgress?.({ progress: 60, stage: 'Generating STL data...' });
 
-        const result: any = exporter.parse(mesh, { binary: true });
+        // Export as binary STL
+        const result = exporter.parse(mesh, { binary: true });
         
         onProgress?.({ progress: 90, stage: 'Finalizing export...' });
 
-        // Convert result to proper ArrayBuffer for Blob
-        let arrayBuffer: ArrayBuffer;
-        if (result instanceof DataView) {
-          arrayBuffer = new ArrayBuffer(result.byteLength);
-          new Uint8Array(arrayBuffer).set(new Uint8Array(result.buffer, result.byteOffset, result.byteLength));
-        } else if (result instanceof ArrayBuffer) {
-          arrayBuffer = result;
-        } else if (result?.buffer instanceof ArrayBuffer) {
-          // Handle other buffer-like objects
-          arrayBuffer = result.buffer.slice(0);
-        } else {
-          // Fallback: try to create buffer from whatever we got
-          arrayBuffer = new ArrayBuffer(result.byteLength || result.length || 0);
-          new Uint8Array(arrayBuffer).set(new Uint8Array(result));
-        }
+        // The STLExporter returns a DataView or ArrayBuffer
+        let data: Blob;
+        let size: number;
         
-        const data = new Blob([arrayBuffer], { type: 'application/octet-stream' });
-        const size = arrayBuffer.byteLength;
+        if (result instanceof ArrayBuffer) {
+          data = new Blob([result], { type: 'application/octet-stream' });
+          size = result.byteLength;
+        } else if (result instanceof DataView) {
+          // Convert DataView to ArrayBuffer properly
+          const buffer = result.buffer.slice(result.byteOffset, result.byteOffset + result.byteLength);
+          // Ensure we have an ArrayBuffer, not SharedArrayBuffer
+          const arrayBuffer = buffer instanceof ArrayBuffer ? buffer : new ArrayBuffer(0);
+          data = new Blob([arrayBuffer], { type: 'application/octet-stream' });
+          size = arrayBuffer.byteLength;
+        } else {
+          // For string results (ASCII STL)
+          const encoder = new TextEncoder();
+          const buffer = encoder.encode(result as string);
+          data = new Blob([buffer], { type: 'application/octet-stream' });
+          size = buffer.byteLength;
+        }
 
         onProgress?.({ progress: 100, stage: 'Export complete!' });
 
@@ -173,19 +187,19 @@ export class LogoExporter {
         
         onProgress?.({ progress: 20, stage: 'Processing mesh...' });
 
-        const result = exporter.parse(mesh);
-        
+        // Create a scene with just the mesh for proper export
+        const exportScene = new THREE.Scene();
+        const clonedMesh = mesh.clone();
+        exportScene.add(clonedMesh);
+
         onProgress?.({ progress: 60, stage: 'Generating OBJ data...' });
 
-        // Generate MTL file content if material exists
-        let mtlContent = '';
-        if (mesh.material instanceof THREE.Material) {
-          const material = mesh.material as any;
-          mtlContent = this.generateMTL(material);
-        }
-
+        // Parse the scene instead of just the mesh for better compatibility
+        const result = exporter.parse(exportScene);
+        
         onProgress?.({ progress: 80, stage: 'Creating files...' });
 
+        // Create OBJ blob
         const objData = new Blob([result], { type: 'text/plain' });
         const size = result.length;
 
@@ -276,9 +290,109 @@ export class LogoExporter {
     options: ExportOptions,
     onProgress?: (progress: ExportProgress) => void
   ): Promise<ExportResult> {
-    // Video export would require additional libraries like MediaRecorder API
-    // This is a simplified implementation
-    throw new Error('Video export is not yet implemented. This feature requires additional setup for recording animations.');
+    return new Promise((resolve, reject) => {
+      try {
+        // Check if MediaRecorder is supported
+        if (!window.MediaRecorder) {
+          reject(new Error('Video recording is not supported in your browser. Please use Chrome or Firefox.'));
+          return;
+        }
+
+        onProgress?.({ progress: 10, stage: 'Setting up video recording...' });
+
+        const canvas = this.renderer.domElement;
+        const stream = canvas.captureStream(fps);
+        
+        // Setup MediaRecorder with proper codec
+        const mimeType = 'video/webm;codecs=vp9';
+        const alternativeMimeType = 'video/webm';
+        
+        let selectedMimeType = mimeType;
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          if (MediaRecorder.isTypeSupported(alternativeMimeType)) {
+            selectedMimeType = alternativeMimeType;
+          } else {
+            reject(new Error('No suitable video codec found. Video export is not supported.'));
+            return;
+          }
+        }
+
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: selectedMimeType,
+          videoBitsPerSecond: 2500000 // 2.5 Mbps
+        });
+
+        const chunks: Blob[] = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            chunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          onProgress?.({ progress: 90, stage: 'Finalizing video...' });
+          
+          const blob = new Blob(chunks, { type: 'video/webm' });
+          
+          onProgress?.({ progress: 100, stage: 'Export complete!' });
+          
+          resolve({
+            data: blob,
+            filename: 'logo.webm', // Changed to webm as MP4 requires transcoding
+            size: blob.size,
+            mimeType: 'video/webm',
+          });
+        };
+
+        mediaRecorder.onerror = (event: any) => {
+          reject(new Error(`Video recording failed: ${event.error?.message || 'Unknown error'}`));
+        };
+
+        onProgress?.({ progress: 30, stage: 'Recording animation...' });
+
+        // Start recording
+        mediaRecorder.start();
+
+        // Animate the logo during recording
+        const startTime = Date.now();
+        const totalFrames = duration * fps;
+        let frameCount = 0;
+
+        const recordFrame = () => {
+          const elapsed = (Date.now() - startTime) / 1000;
+          
+          if (elapsed < duration) {
+            // Update progress
+            frameCount++;
+            const progress = Math.min(30 + (frameCount / totalFrames) * 50, 80);
+            onProgress?.({ progress, stage: `Recording frame ${frameCount}/${totalFrames}...` });
+
+            // Rotate the scene for animation
+            this.scene.rotation.y = (elapsed / duration) * Math.PI * 2;
+            
+            // Render frame
+            this.renderer.render(this.scene, this.camera);
+            
+            // Continue recording
+            requestAnimationFrame(recordFrame);
+          } else {
+            // Stop recording
+            mediaRecorder.stop();
+            
+            // Reset scene rotation
+            this.scene.rotation.y = 0;
+            this.renderer.render(this.scene, this.camera);
+          }
+        };
+
+        // Start animation loop
+        requestAnimationFrame(recordFrame);
+
+      } catch (error) {
+        reject(new Error(`Video export failed: ${error instanceof Error ? error.message : error}`));
+      }
+    });
   }
 
   private generateMTL(material: any): string {

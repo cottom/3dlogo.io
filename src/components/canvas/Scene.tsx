@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Grid, PerspectiveCamera, ContactShadows } from '@react-three/drei';
+import { OrbitControls, Grid } from '@react-three/drei';
 import { Suspense } from 'react';
 import { useBackgroundColor, useEditorStore } from '@/store/editorStore';
 import { SceneExportConnector } from '@/components/export/SceneExportConnector';
@@ -26,14 +26,6 @@ function Lights() {
       <directionalLight
         position={[10, 10, 5]}
         intensity={1}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-near={0.1}
-        shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
       />
       
       {/* Fill light from the opposite side */}
@@ -51,7 +43,6 @@ function Lights() {
         intensity={0.5}
         angle={Math.PI / 6}
         penumbra={1}
-        castShadow
       />
     </>
   );
@@ -68,8 +59,7 @@ function SceneContent() {
       <Lights />
       
       {/* Environment for reflections with material system integration */}
-      <EnvironmentSetup preset="studio" />
-      <Environment preset="studio" />
+      <EnvironmentSetup />
       
       {/* Grid helper */}
       {showGrid && (
@@ -87,14 +77,6 @@ function SceneContent() {
         />
       )}
       
-      {/* Contact shadows for better grounding */}
-      <ContactShadows
-        position={[0, -1, 0]}
-        opacity={0.4}
-        scale={20}
-        blur={2}
-        far={4}
-      />
       
       {/* Main logo mesh */}
       <Suspense fallback={<LoadingFallback />}>
@@ -106,8 +88,8 @@ function SceneContent() {
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={2}
-        maxDistance={20}
+        minDistance={1}
+        maxDistance={100}
         maxPolarAngle={Math.PI / 2 + Math.PI / 4}
         target={[0, 0, 0]}
         autoRotate={false}
@@ -127,14 +109,13 @@ export default function Scene({ className = '' }: SceneProps) {
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
-        shadows
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
         }}
         camera={{
-          position: [5, 5, 5],
+          position: [0, 0, 30],
           fov: 50,
           near: 0.1,
           far: 1000,

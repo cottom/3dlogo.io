@@ -28,6 +28,13 @@ export interface AnimationConfig {
   speed: number;
 }
 
+export interface EnvironmentConfig {
+  preset: 'studio' | 'sunset' | 'dawn' | 'night' | 'warehouse' | 'forest' | 'apartment' | 'city' | 'park' | 'lobby';
+  background: boolean;
+  intensity: number;
+  blur: number;
+}
+
 export interface UploadState {
   isUploading: boolean;
   uploadProgress: number;
@@ -60,6 +67,7 @@ export interface EditorState {
   // Scene settings
   backgroundColor: string;
   environmentType: 'color' | 'gradient' | 'hdri';
+  environment: EnvironmentConfig;
   
   // UI state
   selectedTool: string | null;
@@ -82,6 +90,7 @@ export interface EditorState {
     setSelectedMaterialId: (id: string | null) => void;
     updateMaterial: (material: Partial<MaterialConfig>) => void;
     updateAnimation: (animation: Partial<AnimationConfig>) => void;
+    updateEnvironment: (environment: Partial<EnvironmentConfig>) => void;
     setBackgroundColor: (color: string) => void;
     setEnvironmentType: (type: 'color' | 'gradient' | 'hdri') => void;
     setSelectedTool: (tool: string | null) => void;
@@ -112,6 +121,13 @@ const initialAnimation: AnimationConfig = {
   speed: 1,
 };
 
+const initialEnvironment: EnvironmentConfig = {
+  preset: 'studio',
+  background: false,
+  intensity: 1,
+  blur: 0,
+};
+
 const initialUploadState: UploadState = {
   isUploading: false,
   uploadProgress: 0,
@@ -121,7 +137,7 @@ const initialUploadState: UploadState = {
 };
 
 export const useEditorStore = create<EditorState>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set) => ({
     // Initial state
     svgContent: null,
     logoFile: null,
@@ -131,6 +147,7 @@ export const useEditorStore = create<EditorState>()(
     selectedMaterialId: null,
     material: initialMaterial,
     animation: initialAnimation,
+    environment: initialEnvironment,
     backgroundColor: '#f0f0f0',
     environmentType: 'color',
     selectedTool: null,
@@ -185,7 +202,7 @@ export const useEditorStore = create<EditorState>()(
         })),
 
       resetUpload: () =>
-        set((currentState) => ({
+        set(() => ({
           upload: initialUploadState,
         })),
 
@@ -205,6 +222,11 @@ export const useEditorStore = create<EditorState>()(
       updateAnimation: (animation: Partial<AnimationConfig>) =>
         set((state) => ({
           animation: { ...state.animation, ...animation },
+        })),
+
+      updateEnvironment: (environment: Partial<EnvironmentConfig>) =>
+        set((state) => ({
+          environment: { ...state.environment, ...environment },
         })),
 
       setBackgroundColor: (color: string) =>
@@ -229,6 +251,7 @@ export const useEditorStore = create<EditorState>()(
           selectedMaterialId: null,
           material: initialMaterial,
           animation: initialAnimation,
+          environment: initialEnvironment,
           backgroundColor: '#f0f0f0',
           environmentType: 'color',
           selectedTool: null,
@@ -244,6 +267,7 @@ export const useBevelParams = () => useEditorStore((state) => state.bevelParams)
 export const useSelectedMaterialId = () => useEditorStore((state) => state.selectedMaterialId);
 export const useMaterial = () => useEditorStore((state) => state.material);
 export const useAnimation = () => useEditorStore((state) => state.animation);
+export const useEnvironment = () => useEditorStore((state) => state.environment);
 export const useBackgroundColor = () => useEditorStore((state) => state.backgroundColor);
 export const useUploadState = () => useEditorStore((state) => state.upload);
 export const useEditorActions = () => useEditorStore((state) => state.actions);

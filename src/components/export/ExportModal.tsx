@@ -65,7 +65,8 @@ const formatOptions: FormatOption[] = [
     id: 'png',
     name: 'PNG',
     description: 'High-quality image with transparency',
-    icon: <Image className="w-5 h-5" />,
+    // eslint-disable-next-line jsx-a11y/alt-text
+    icon: <Image className="w-5 h-5" aria-hidden="true" />,
     category: 'image',
     recommended: ['web', 'print'],
     fileExtension: 'png'
@@ -74,19 +75,20 @@ const formatOptions: FormatOption[] = [
     id: 'jpg',
     name: 'JPEG',
     description: 'Compressed image format',
-    icon: <Image className="w-5 h-5" />,
+    // eslint-disable-next-line jsx-a11y/alt-text
+    icon: <Image className="w-5 h-5" aria-hidden="true" />,
     category: 'image',
     recommended: ['web'],
     fileExtension: 'jpg'
   },
   {
     id: 'mp4',
-    name: 'MP4 Video',
+    name: 'Video (WebM)',
     description: 'Animated video of rotating logo',
     icon: <Film className="w-5 h-5" />,
     category: 'video',
     recommended: ['web'],
-    fileExtension: 'mp4'
+    fileExtension: 'webm'
   }
 ];
 
@@ -135,7 +137,7 @@ export default function ExportModal({ isOpen, onClose }: ExportModalProps) {
         size = jpgPixels * 3 * quality * 0.1; // Rough JPEG estimate
         break;
       case 'mp4':
-        size = 2 * 1024 * 1024; // ~2MB for short video
+        size = 3 * 1024 * 1024; // ~3MB for 5 second WebM video
         break;
     }
     

@@ -29,6 +29,8 @@ export class GradientMaterialFactory {
       uMetalness: { value: preset.metalness || 0.3 },
       uRoughness: { value: preset.roughness || 0.4 },
       uEmissiveIntensity: { value: preset.emissiveIntensity || 0.1 },
+      uFresnelPower: { value: 2.0 },
+      uSpecularIntensity: { value: 0.5 },
       // Standard Three.js uniforms for lighting
       ...THREE.UniformsLib.common,
       ...THREE.UniformsLib.lights,
@@ -53,40 +55,19 @@ export class GradientMaterialFactory {
   private getVertexShader(): string {
     return /* glsl */ `
       #include <common>
-      #include <uv_pars_vertex>
-      #include <displacementmap_pars_vertex>
-      #include <morphtarget_pars_vertex>
-      #include <skinning_pars_vertex>
-      #include <logdepthbuf_pars_vertex>
-      #include <clipping_planes_pars_vertex>
       
       varying vec2 vUv;
-      varying vec3 vViewPosition;
       varying vec3 vNormal;
       varying vec3 vWorldPosition;
       
       void main() {
-        #include <uv_vertex>
-        #include <skinbase_vertex>
-        #include <beginnormal_vertex>
-        #include <morphnormal_vertex>
-        #include <skinning_vertex>
-        #include <defaultnormal_vertex>
-        
         vUv = uv;
-        vNormal = normalize(transformedNormal);
+        vNormal = normalMatrix * normal;
         
-        #include <begin_vertex>
-        #include <morphtarget_vertex>
-        #include <skinning_vertex>
-        #include <displacementmap_vertex>
-        #include <project_vertex>
-        #include <logdepthbuf_vertex>
-        #include <clipping_planes_vertex>
-        
-        vViewPosition = -mvPosition.xyz;
-        vec4 worldPosition = modelMatrix * vec4(transformed, 1.0);
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPosition.xyz;
+        
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `;
   }
@@ -101,101 +82,101 @@ export class GradientMaterialFactory {
       uniform float uMetalness;
       uniform float uRoughness;
       uniform float uEmissiveIntensity;
+      uniform float uFresnelPower;
+      uniform float uSpecularIntensity;
       
       varying vec2 vUv;
-      varying vec3 vViewPosition;
       varying vec3 vNormal;
       varying vec3 vWorldPosition;
       
       #include <common>
-      #include <packing>
-      #include <dithering_pars_fragment>
-      #include <color_pars_fragment>
-      #include <uv_pars_fragment>
-      #include <map_pars_fragment>
-      #include <alphamap_pars_fragment>
-      #include <alphatest_pars_fragment>
-      #include <aomap_pars_fragment>
-      #include <lightmap_pars_fragment>
-      #include <emissivemap_pars_fragment>
-      #include <bsdfs>
       #include <lights_pars_begin>
-      #include <lights_phong_pars_fragment>
-      #include <normalmap_pars_fragment>
-      #include <specularmap_pars_fragment>
-      #include <logdepthbuf_pars_fragment>
-      #include <clipping_planes_pars_fragment>
       
       vec3 getGradientColor() {
         vec2 uv = vUv;
         float gradient;
         
+        // Add subtle animation
+        float animOffset = sin(uTime * 0.5) * 0.02;
+        
         // Calculate gradient based on direction
         if (abs(uDirection.x) > 0.9 && abs(uDirection.y) < 0.1) {
           // Horizontal
-          gradient = uv.x;
+          gradient = uv.x + animOffset;
         } else if (abs(uDirection.y) > 0.9 && abs(uDirection.x) < 0.1) {
           // Vertical
-          gradient = uv.y;
+          gradient = uv.y + animOffset;
         } else if (length(uDirection - vec2(0.5, 0.5)) < 0.1) {
           // Radial
           vec2 center = vec2(0.5, 0.5);
-          gradient = length(uv - center) * 2.0;
+          gradient = length(uv - center) * 2.0 + animOffset;
         } else {
           // Diagonal
-          gradient = (uv.x + uv.y) * 0.5;
+          gradient = (uv.x + uv.y) * 0.5 + animOffset;
         }
         
-        gradient = clamp(gradient, 0.0, 1.0);
+        // Smooth gradient transitions
+        gradient = smoothstep(0.0, 1.0, gradient);
         
-        // Three-color gradient
+        // Three-color gradient with smoother transitions
         vec3 color;
         if (gradient < 0.5) {
-          color = mix(uColor1, uColor2, gradient * 2.0);
+          float t = gradient * 2.0;
+          t = smoothstep(0.0, 1.0, t);
+          color = mix(uColor1, uColor2, t);
         } else {
-          color = mix(uColor2, uColor3, (gradient - 0.5) * 2.0);
+          float t = (gradient - 0.5) * 2.0;
+          t = smoothstep(0.0, 1.0, t);
+          color = mix(uColor2, uColor3, t);
         }
         
         return color;
       }
       
       void main() {
-        #include <clipping_planes_fragment>
-        
         vec3 baseColor = getGradientColor();
-        vec4 diffuseColor = vec4(baseColor, 1.0);
-        ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
-        vec3 totalEmissiveRadiance = baseColor * uEmissiveIntensity;
         
-        #include <logdepthbuf_fragment>
-        #include <map_fragment>
-        #include <color_fragment>
-        #include <alphamap_fragment>
-        #include <alphatest_fragment>
-        #include <specularmap_fragment>
-        #include <normal_fragment_begin>
-        #include <normal_fragment_maps>
-        #include <emissivemap_fragment>
+        // Enhanced lighting
+        vec3 normal = normalize(vNormal);
+        vec3 viewDir = normalize(cameraPosition - vWorldPosition);
         
-        // accumulation
-        #include <lights_phong_fragment>
-        #include <lights_fragment_begin>
-        #include <lights_fragment_maps>
-        #include <lights_fragment_end>
+        // Multiple light sources for better depth
+        vec3 lightDir1 = normalize(vec3(1.0, 1.0, 0.5));
+        vec3 lightDir2 = normalize(vec3(-0.5, 0.5, 1.0));
+        vec3 lightDir3 = normalize(vec3(0.0, -1.0, 0.3));
         
-        // modulation
-        #include <aomap_fragment>
+        float diffuse1 = max(dot(normal, lightDir1), 0.0);
+        float diffuse2 = max(dot(normal, lightDir2), 0.0) * 0.5;
+        float diffuse3 = max(dot(normal, lightDir3), 0.0) * 0.3;
         
-        vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + 
-                             reflectedLight.directSpecular + reflectedLight.indirectSpecular + 
-                             totalEmissiveRadiance;
+        float totalDiffuse = diffuse1 + diffuse2 + diffuse3;
         
-        #include <output_fragment>
+        // Specular highlights
+        vec3 halfwayDir = normalize(lightDir1 + viewDir);
+        float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+        vec3 specular = vec3(1.0) * spec * uSpecularIntensity;
+        
+        // Fresnel effect for rim lighting
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), uFresnelPower);
+        vec3 fresnelColor = baseColor * fresnel * 0.5;
+        
+        // Metalness simulation
+        vec3 metallicTint = mix(vec3(1.0), baseColor, uMetalness);
+        
+        // Combine all lighting components
+        vec3 ambient = baseColor * 0.3;
+        vec3 diffuseColor = baseColor * totalDiffuse * 0.7 * metallicTint;
+        vec3 emissive = baseColor * uEmissiveIntensity;
+        
+        vec3 finalColor = ambient + diffuseColor + specular + fresnelColor + emissive;
+        
+        // Subtle color enhancement
+        finalColor = pow(finalColor, vec3(0.95));
+        
+        gl_FragColor = vec4(finalColor, 1.0);
+        
         #include <tonemapping_fragment>
-        #include <encodings_fragment>
-        #include <fog_fragment>
-        #include <premultiplied_alpha_fragment>
-        #include <dithering_fragment>
+        #include <colorspace_fragment>
       }
     `;
   }

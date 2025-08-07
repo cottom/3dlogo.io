@@ -2,18 +2,15 @@
 
 import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
-import { useEnvironment } from '@react-three/drei';
+import { useEnvironment as useDreiEnvironment } from '@react-three/drei';
 import { MaterialManager } from '@/lib/materials';
+import { useEnvironment } from '@/store/editorStore';
 import * as THREE from 'three';
 
-interface EnvironmentSetupProps {
-  preset?: string;
-  background?: boolean;
-}
-
-export function EnvironmentSetup({ preset = 'studio', background = false }: EnvironmentSetupProps) {
+export function EnvironmentSetup() {
   const { scene, gl } = useThree();
-  const envMap = useEnvironment({ preset: preset as any });
+  const environment = useEnvironment();
+  const envMap = useDreiEnvironment({ preset: environment.preset as any });
 
   useEffect(() => {
     if (envMap) {
@@ -29,24 +26,30 @@ export function EnvironmentSetup({ preset = 'studio', background = false }: Envi
       scene.environment = envMap as THREE.Texture;
       
       // Optionally set as background
-      if (background) {
+      if (environment.background) {
         scene.background = envMap as THREE.Texture;
+        // Apply blur if specified
+        if (environment.blur > 0 && envMap instanceof THREE.Texture) {
+          scene.backgroundBlurriness = environment.blur;
+        }
+      } else {
+        scene.background = null;
+        scene.backgroundBlurriness = 0;
       }
 
       // Configure renderer for better PBR
       gl.toneMapping = THREE.ACESFilmicToneMapping;
-      gl.toneMappingExposure = 1.0;
+      gl.toneMappingExposure = environment.intensity;
       gl.outputColorSpace = THREE.SRGBColorSpace;
     }
 
     return () => {
       // Cleanup
       scene.environment = null;
-      if (background) {
-        scene.background = null;
-      }
+      scene.background = null;
+      scene.backgroundBlurriness = 0;
     };
-  }, [envMap, scene, gl, background]);
+  }, [envMap, scene, gl, environment.background, environment.intensity, environment.blur]);
 
   return null;
 }
