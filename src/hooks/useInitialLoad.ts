@@ -33,7 +33,7 @@ export function useInitialLoad() {
       } else {
         clearInterval(progressInterval);
       }
-    }, 200);
+    }, 100);
 
     return () => clearInterval(progressInterval);
   }, []);
