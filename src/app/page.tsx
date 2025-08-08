@@ -1,7 +1,8 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Metadata } from 'next';
 import StructuredData from '@/components/seo/StructuredData';
+import FaqAccordion, { type FaqItem } from '@/components/FaqAccordion';
 
 export const metadata: Metadata = {
   title: 'Free 3D Logo Maker | Create Professional 3D Logos Online - 3DLogo.io',
@@ -84,7 +85,7 @@ export default function Home() {
               Transform your ideas into professional 3D logos with our free 3D logo maker and 3D logo generator.
               Choose from premium materials, add animations, and export high‑quality files in seconds.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
+            <div className="mt-10 flex items-center justify-center gap-x-4 flex-wrap">
               <Link
                 href="/editor"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
@@ -93,12 +94,28 @@ export default function Home() {
               >
                 Start Creating Free
               </Link>
-              {/* <button 
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold text-lg transition-colors"
-                aria-label="Watch demo video"
+              <Link
+                href="#showcase"
+                className="ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 px-8 py-4 rounded-xl text-lg font-semibold transition-all"
+                aria-label="View 3D logo examples"
+                title="View 3D Logo Examples"
               >
-                Watch Demo →
-              </button> */}
+                View Examples
+              </Link>
+            </div>
+            <div className="mt-6 flex items-center justify-center gap-3 text-sm text-gray-600 dark:text-gray-300 flex-wrap">
+              <span className="inline-flex items-center rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 ring-1 ring-gray-200 dark:ring-gray-700">
+                <svg className="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                <span className="ml-2">Free forever</span>
+              </span>
+              <span className="inline-flex items-center rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 ring-1 ring-gray-200 dark:ring-gray-700">
+                <svg className="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                <span className="ml-2">No signup</span>
+              </span>
+              <span className="inline-flex items-center rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 ring-1 ring-gray-200 dark:ring-gray-700">
+                <svg className="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" focusable="false"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                <span className="ml-2">No watermark</span>
+              </span>
             </div>
           </div>
 
@@ -113,6 +130,10 @@ export default function Home() {
                   fill
                   className="object-cover opacity-30"
                   priority
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-br from-white/70 via-transparent to-black/30 dark:from-black/40 dark:via-transparent dark:to-black/70"
+                  aria-hidden="true"
                 />
                 <div className="relative z-10 p-8 min-h-[400px] flex items-center justify-center">
                   <div className="text-center">
@@ -274,7 +295,7 @@ export default function Home() {
       </section>
 
       {/* Showcase Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800" aria-labelledby="showcase-heading">
+      <section id="showcase" className="scroll-mt-24 py-20 bg-gray-50 dark:bg-gray-800" aria-labelledby="showcase-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 id="showcase-heading" className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -344,7 +365,7 @@ export default function Home() {
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
               <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={`star-sarah-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-sarah-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -371,7 +392,7 @@ export default function Home() {
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
               <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={`star-mike-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-mike-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -398,7 +419,7 @@ export default function Home() {
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
               <div className="flex mb-4" role="img" aria-label="5 out of 5 stars rating">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={`star-emma-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <svg key={`star-emma-${i}`} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                     <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                   </svg>
                 ))}
@@ -462,7 +483,7 @@ export default function Home() {
                     'No sign-up required',
                   ].map((feature) => (
                     <li key={feature} className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true" focusable="false">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-gray-700 dark:text-gray-300">{feature}</span>
@@ -486,104 +507,84 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white dark:bg-gray-900" aria-labelledby="faq-heading">
+      <section id="faq" className="py-20 bg-white dark:bg-gray-900" aria-labelledby="faq-heading">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 id="faq-heading" className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Frequently Asked Questions
             </h2>
+            <p className="text-gray-600 dark:text-gray-300">Answers to common questions about our free 3D logo maker and 3D logo generator tool.</p>
           </div>
-          
-          <div className="space-y-6">
-            {[
+          <FaqAccordion
+            items={[
               {
-                question: 'Is 3DLogo.io really free?',
-                answer: 'Yes! 3DLogo.io is completely free to use. There are no hidden costs, subscriptions, or premium features. You can create unlimited logos with all materials and export them without watermarks.',
+                question: 'What is a 3D logo and why use a 3D logo maker?',
+                answer: (
+                  <p>
+                    A 3D logo adds realistic depth, lighting, and materials to your brand mark so it stands out everywhere — from websites and YouTube banners to social media and product packaging. Using our professional 3D logo maker, you can convert simple text or an existing mark into a premium 3D logo in minutes without any design experience.
+                  </p>
+                ),
               },
               {
-                question: 'What file formats can I export?',
-                answer: 'You can export your 3D logos as PNG images (up to 4K resolution), animated GIFs, MP4 videos, and GLB 3D models for use in other 3D applications.',
+                question: 'How do I create a 3D logo online with your 3D logo generator?',
+                answer: (
+                  <ol className="list-decimal list-inside space-y-2 ml-1">
+                    <li className="pl-1">
+                      Open our <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">free online 3D logo maker</Link> in your browser.
+                    </li>
+                    <li className="pl-1">Type your brand name or upload an SVG/PNG logo to the 3D logo generator.</li>
+                    <li className="pl-1">Choose from premium materials like chrome, gold, glass, neon, or holographic effects.</li>
+                    <li className="pl-1">Customize depth, bevels, lighting, colors, and animation using our 3D logo maker tools.</li>
+                    <li className="pl-1">Export high‑resolution PNG, animated GIF/MP4, or GLB 3D model files instantly.</li>
+                  </ol>
+                ),
               },
               {
-                question: 'Can I use the logos commercially?',
-                answer: 'Absolutely! All logos created with 3DLogo.io come with full commercial usage rights. Use them for your business, clients, or any commercial project without restrictions.',
+                question: 'Is this 3D logo maker and generator really free?',
+                answer: 'Yes! Our 3D logo maker and 3D logo generator are completely free to use. There are no hidden costs, subscriptions, or premium features. You can create unlimited 3D logos with all materials and export them without watermarks using our free 3D logo maker.',
               },
               {
-                question: 'Do I need to sign up or create an account?',
-                answer: 'No sign-up required! You can start creating 3D logos immediately without creating an account or providing any personal information.',
+                question: 'What file formats can I export from the 3D logo generator?',
+                answer: 'Our 3D logo maker supports multiple export formats: PNG images (up to 4K resolution), animated GIFs, MP4 videos, and GLB 3D models for use in other 3D applications. All exports are free and unlimited.',
               },
               {
-                question: 'What browsers are supported?',
-                answer: '3DLogo.io works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version for the best experience.',
+                question: 'Can I use logos from your 3D logo maker commercially?',
+                answer: 'Absolutely! All 3D logos created with our 3D logo maker and generator come with full commercial usage rights. Use them for your business, clients, or any commercial project without restrictions.',
               },
               {
-                question: 'Can I edit my logo after exporting?',
-                answer: 'While exported files cannot be re-imported for editing, you can always recreate and modify your logo design as many times as you want using our editor.',
+                question: 'Do I need to sign up to use the 3D logo generator?',
+                answer: 'No sign-up required! You can start using our 3D logo maker and generator immediately without creating an account or providing any personal information. Just open the tool and start creating professional 3D logos.',
               },
-            ].map((item) => (
-              <div key={item.question} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  {item.question}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {item.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SEO Content Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="prose prose-lg dark:prose-invert mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Free 3D Logo Maker & 3D Logo Generator</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              3DLogo.io is a free online 3D logo maker and powerful 3D logo generator that empowers businesses, designers, and creators to craft stunning 3D logos without any design experience. Our intuitive web app transforms flat designs into eye‑catching, professional three‑dimensional logos using advanced WebGL technology.
-            </p>
-
-            <h3 className="text-xl font-semibold mt-8 mb-4">What is a 3D Logo?</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A 3D logo adds realistic depth, lighting, and materials to your brand mark so it stands out everywhere—from websites and YouTube banners to social media and product packaging. Use our 3D logo maker to convert simple text or an existing mark into a premium 3D logo in minutes.
-            </p>
-
-            <h3 className="text-xl font-semibold mt-8 mb-4">How to Create a 3D Logo Online</h3>
-            <ol className="list-decimal list-inside text-gray-600 dark:text-gray-300 space-y-2">
-              <li>Open the <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">free 3D logo maker</Link>.</li>
-              <li>Type your brand name or upload an SVG/PNG logo.</li>
-              <li>Pick materials like chrome, gold, glass, neon, or holographic.</li>
-              <li>Customize depth, bevels, lighting, colors, and animation.</li>
-              <li>Export high‑resolution PNG, animated GIF/MP4, or a GLB 3D model.</li>
-            </ol>
-
-            <h3 className="text-xl font-semibold mt-8 mb-4">3D Logo Maker vs 3D Logo Generator</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              The terms 3D logo maker and 3D logo generator are often used interchangeably. Our tool does both: it helps you design a unique 3D logo from scratch and also generates 3D styles for existing logos—fast, free, and entirely in your browser.
-            </p>
-
-            <h3 className="text-xl font-semibold mt-8 mb-4">Popular 3D Logo Use Cases</h3>
-            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
-              <li>3D logo for YouTube, Twitch, Instagram, and TikTok profiles</li>
-              <li>Business branding, websites, and app icons</li>
-              <li>3D text logo maker for merch, thumbnails, and intros</li>
-              <li>Animated 3D logo for intros, reels, and ads</li>
-              <li>Metallic, glass, neon, and holographic 3D logo styles</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold mt-8 mb-4">Why Choose 3DLogo.io</h3>
-            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
-              <li><strong>Free Forever:</strong> No hidden costs, subscriptions, or watermarks</li>
-              <li><strong>Premium Materials:</strong> Chrome, gold, glass, neon, cosmic gradients—no plugins required</li>
-              <li><strong>Real‑time 3D Preview:</strong> See changes instantly as you customize</li>
-              <li><strong>Professional Exports:</strong> PNG, GIF, MP4, and GLB formats</li>
-              <li><strong>Commercial Use:</strong> Full rights to use your 3D logos anywhere</li>
-            </ul>
-
-            <p className="text-gray-600 dark:text-gray-300 mt-6">
-              Start now with our <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">free 3D logo maker</Link> and <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">3D logo generator</Link>—create a professional 3D logo in minutes.
-            </p>
-          </div>
+              {
+                question: 'What browsers work with your online 3D logo maker?',
+                answer: 'Our web-based 3D logo maker and generator work on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest browser version for the best 3D logo creation experience.',
+              },
+              {
+                question: 'Can I edit my 3D logo after exporting from the logo maker?',
+                answer: 'While exported files cannot be re-imported for editing, you can always recreate and modify your 3D logo design as many times as you want using our online 3D logo maker. The tool saves your recent settings for convenience.',
+              },
+              {
+                question: '3D logo maker vs 3D logo generator — what\'s the difference?',
+                answer: (
+                  <p>
+                    The terms &ldquo;3D logo maker&rdquo; and &ldquo;3D logo generator&rdquo; are often used interchangeably. Our comprehensive tool functions as both: it helps you design unique 3D logos from scratch (logo maker) and automatically generates stunning 3D styles for existing logos (logo generator) — all fast, free, and entirely in your browser.
+                  </p>
+                ),
+              },
+              {
+                question: 'What makes your 3D logo maker better than other logo generators?',
+                answer: (
+                  <p>
+                    Our 3D logo maker stands out with real-time 3D preview, professional materials (chrome, gold, glass, neon), unlimited free exports, no watermarks, commercial usage rights, and no sign-up required. Unlike other 3D logo generators, everything runs in your browser with instant results.
+                  </p>
+                ),
+              },
+              {
+                question: 'Can beginners use this 3D logo maker without design skills?',
+                answer: 'Absolutely! Our 3D logo generator is designed for everyone, from beginners to professionals. The intuitive interface guides you through creating stunning 3D logos without any design experience. Simply type your text, choose a style, and our 3D logo maker does the rest.',
+              },
+            ] as FaqItem[]}
+          />
         </div>
       </section>
 
