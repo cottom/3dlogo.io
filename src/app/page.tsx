@@ -5,8 +5,8 @@ import StructuredData from '@/components/seo/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Free 3D Logo Maker | Create Professional 3D Logos Online - 3DLogo.io',
-  description: 'Create stunning 3D logos instantly with our free online logo maker. Choose from premium materials like chrome, gold, and cosmic gradients. Real-time preview, professional export options, and no design skills required. Start creating your 3D logo now!',
-  keywords: '3D logo maker, online logo creator, free logo design, 3D logo generator, professional logos, chrome logos, gold logos, animated logos, logo export, business branding, logo design tool, 3D text maker, custom logos',
+  description: 'Create stunning 3D logos with our free 3D logo maker and 3D logo generator. Choose chrome, gold, glass, neon, and cosmic gradients. Real-time preview, pro exports, and no design skills required. Start your 3D logo today!',
+  keywords: '3D logo, 3D logo maker, 3D logo generator, free 3D logo maker, free 3D logo generator, online 3D logo maker, online 3D logo generator, 3D text logo maker, logo creator, free logo design, professional logos, chrome logo, gold logo, animated logo, logo export, business branding, logo design tool, custom logos',
   authors: [{ name: '3DLogo.io' }],
   creator: '3DLogo.io',
   publisher: '3DLogo.io',
@@ -81,8 +81,8 @@ export default function Home() {
               </span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Transform your ideas into professional 3D logos with our powerful online editor. 
-              Choose from premium materials, add animations, and export in high quality.
+              Transform your ideas into professional 3D logos with our free 3D logo maker and 3D logo generator.
+              Choose from premium materials, add animations, and export high‑quality files in seconds.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
@@ -538,24 +538,50 @@ export default function Home() {
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg dark:prose-invert mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Create Professional 3D Logos in Minutes</h2>
+            <h2 className="text-2xl font-bold mb-6">Free 3D Logo Maker & 3D Logo Generator</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              3DLogo.io is the ultimate free online 3D logo maker that empowers businesses, designers, and creators to craft stunning three-dimensional logos without any design experience. Our intuitive web-based platform transforms flat designs into eye-catching 3D masterpieces using advanced WebGL technology.
+              3DLogo.io is a free online 3D logo maker and powerful 3D logo generator that empowers businesses, designers, and creators to craft stunning 3D logos without any design experience. Our intuitive web app transforms flat designs into eye‑catching, professional three‑dimensional logos using advanced WebGL technology.
             </p>
-            
-            <h3 className="text-xl font-semibold mt-8 mb-4">Why Choose Our 3D Logo Creator?</h3>
-            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
-              <li><strong>100% Free:</strong> No hidden costs, subscriptions, or watermarks</li>
-              <li><strong>Premium Materials:</strong> Access chrome, gold, glass, neon, and cosmic gradient effects</li>
-              <li><strong>Real-time 3D Preview:</strong> See changes instantly as you customize</li>
-              <li><strong>Professional Export:</strong> Download in PNG, GIF, MP4, or GLB formats</li>
-              <li><strong>No Software Installation:</strong> Works directly in your browser</li>
-              <li><strong>Commercial Use:</strong> Full rights to use your logos anywhere</li>
-            </ul>
-            
-            <h3 className="text-xl font-semibold mt-8 mb-4">Perfect for Every Industry</h3>
+
+            <h3 className="text-xl font-semibold mt-8 mb-4">What is a 3D Logo?</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Whether you&#39;re launching a tech startup, running an e-commerce store, managing a creative agency, or building a gaming brand, our 3D logo maker delivers professional results that elevate your brand identity. Join thousands of satisfied users who&#39;ve transformed their business presence with stunning 3D logos.
+              A 3D logo adds realistic depth, lighting, and materials to your brand mark so it stands out everywhere—from websites and YouTube banners to social media and product packaging. Use our 3D logo maker to convert simple text or an existing mark into a premium 3D logo in minutes.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-8 mb-4">How to Create a 3D Logo Online</h3>
+            <ol className="list-decimal list-inside text-gray-600 dark:text-gray-300 space-y-2">
+              <li>Open the <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">free 3D logo maker</Link>.</li>
+              <li>Type your brand name or upload an SVG/PNG logo.</li>
+              <li>Pick materials like chrome, gold, glass, neon, or holographic.</li>
+              <li>Customize depth, bevels, lighting, colors, and animation.</li>
+              <li>Export high‑resolution PNG, animated GIF/MP4, or a GLB 3D model.</li>
+            </ol>
+
+            <h3 className="text-xl font-semibold mt-8 mb-4">3D Logo Maker vs 3D Logo Generator</h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              The terms 3D logo maker and 3D logo generator are often used interchangeably. Our tool does both: it helps you design a unique 3D logo from scratch and also generates 3D styles for existing logos—fast, free, and entirely in your browser.
+            </p>
+
+            <h3 className="text-xl font-semibold mt-8 mb-4">Popular 3D Logo Use Cases</h3>
+            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
+              <li>3D logo for YouTube, Twitch, Instagram, and TikTok profiles</li>
+              <li>Business branding, websites, and app icons</li>
+              <li>3D text logo maker for merch, thumbnails, and intros</li>
+              <li>Animated 3D logo for intros, reels, and ads</li>
+              <li>Metallic, glass, neon, and holographic 3D logo styles</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold mt-8 mb-4">Why Choose 3DLogo.io</h3>
+            <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
+              <li><strong>Free Forever:</strong> No hidden costs, subscriptions, or watermarks</li>
+              <li><strong>Premium Materials:</strong> Chrome, gold, glass, neon, cosmic gradients—no plugins required</li>
+              <li><strong>Real‑time 3D Preview:</strong> See changes instantly as you customize</li>
+              <li><strong>Professional Exports:</strong> PNG, GIF, MP4, and GLB formats</li>
+              <li><strong>Commercial Use:</strong> Full rights to use your 3D logos anywhere</li>
+            </ul>
+
+            <p className="text-gray-600 dark:text-gray-300 mt-6">
+              Start now with our <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">free 3D logo maker</Link> and <Link href="/editor" className="text-blue-600 dark:text-blue-400 hover:underline">3D logo generator</Link>—create a professional 3D logo in minutes.
             </p>
           </div>
         </div>

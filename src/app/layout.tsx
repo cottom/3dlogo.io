@@ -51,6 +51,7 @@ export default function RootLayout({
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         <meta name="theme-color" content="#2563eb" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        <script defer data-domain="3dlogo.io" src="https://plausible.aikit.tools/js/script.js"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
