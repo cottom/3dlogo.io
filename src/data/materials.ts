@@ -1,6 +1,11 @@
 import type * as THREE from 'three';
 import { MaterialManager } from '@/lib/materials';
 
+/**
+ * Material preset configuration for Three.js materials
+ * @see https://threejs.org/docs/#api/en/materials/MeshStandardMaterial
+ * @see https://threejs.org/docs/#api/en/materials/MeshPhysicalMaterial
+ */
 export interface MaterialPreset {
   id: string;
   name: string;
@@ -9,24 +14,47 @@ export interface MaterialPreset {
   type: 'standard' | 'physical' | 'gradient';
   
   // Standard material properties
+  /** Base color in hex format (e.g., '#ffffff') */
   color?: string;
+  
+  /** How metallic the material is (0.0 = non-metal, 1.0 = metal) */
   metalness?: number;
+  
+  /** Surface roughness (0.0 = smooth/shiny, 1.0 = rough/matte) */
   roughness?: number;
+  
+  /** Emissive (glow) color in hex format */
   emissive?: string;
+  
+  /** Intensity of emissive light (typically 0.0 to 1.0) */
   emissiveIntensity?: number;
   
   // Gradient properties
+  /** Gradient colors for gradient materials */
   gradientColors?: string[];
+  
+  /** Direction of gradient */
   gradientDirection?: 'horizontal' | 'vertical' | 'radial' | 'diagonal';
   
   // Advanced properties
+  /** Clear coat layer intensity (0.0 to 1.0) - MeshPhysicalMaterial only */
   clearcoat?: number;
+  
+  /** Clear coat layer roughness (0.0 to 1.0) - MeshPhysicalMaterial only */
   clearcoatRoughness?: number;
+  
+  /** Environment map intensity multiplier (typically 0.0 to 3.0) */
   envMapIntensity?: number;
-  normalScale?: number;
+  
+  /** Normal map scale as [x, y] values - stored as array for serialization */
+  normalScale?: [number, number];
+  
+  /** Which sides of faces to render */
+  side?: 'front' | 'back' | 'double';
   
   // Visual representation for UI
-  previewGradient: string; // CSS gradient for the swatch
+  /** CSS gradient for the swatch preview */
+  previewGradient: string;
 }
 
 export const MATERIAL_CATEGORIES = {
@@ -36,6 +64,19 @@ export const MATERIAL_CATEGORIES = {
   glass: 'Crystal Glass',
   wood: 'Natural Wood',
   stone: 'Stone & Marble'
+} as const;
+
+/**
+ * Valid ranges for material properties according to Three.js documentation
+ */
+export const MATERIAL_PROPERTY_LIMITS = {
+  metalness: { min: 0, max: 1 },
+  roughness: { min: 0, max: 1 },
+  clearcoat: { min: 0, max: 1 },
+  clearcoatRoughness: { min: 0, max: 1 },
+  emissiveIntensity: { min: 0, max: 2 },
+  envMapIntensity: { min: 0, max: 3 },
+  normalScale: { min: -1, max: 1 }
 } as const;
 
 export const MATERIAL_PRESETS: MaterialPreset[] = [
@@ -145,6 +186,32 @@ export const MATERIAL_PRESETS: MaterialPreset[] = [
     envMapIntensity: 1.2,
     previewGradient: 'linear-gradient(135deg, #c8d8ec 0%, #b0c4de 50%, #9ab0d0 100%)'
   },
+  {
+    id: 'chrome-clean-optimised',
+    name: 'Chrome Clean',
+    category: 'chrome',
+    type: 'physical',
+    color: '#cccccc',
+    metalness: 1.0,
+    roughness: 0.15,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.05,
+    envMapIntensity: 1.5,
+    previewGradient: 'linear-gradient(135deg, #e0e0e0 0%, #cccccc 50%, #b0b0b0 100%)'
+  },
+  {
+    id: 'chrome-corrugated',
+    name: 'Corrugated Steel',
+    category: 'chrome',
+    type: 'physical',
+    color: '#cccccc',
+    metalness: 1.0,
+    roughness: 0.15,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.25,
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(135deg, #d0d0d0 0%, #cccccc 50%, #a0a0a0 100%)'
+  },
 
   // ===== SOLAR GOLD =====
   {
@@ -237,163 +304,111 @@ export const MATERIAL_PRESETS: MaterialPreset[] = [
     envMapIntensity: 1.4,
     previewGradient: 'linear-gradient(135deg, #f2f2f2 0%, #e5e5e5 50%, #d8d8d8 100%)'
   },
+  {
+    id: 'gold-clean-optimised',
+    name: 'Gold Clean',
+    category: 'gold',
+    type: 'physical',
+    color: '#a8906d',
+    metalness: 1.0,
+    roughness: 0.15,
+    emissive: '#a8906d',
+    emissiveIntensity: 0.02,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.05,
+    envMapIntensity: 1.5,
+    previewGradient: 'linear-gradient(135deg, #d4b896 0%, #a8906d 50%, #8a7456 100%)'
+  },
+  {
+    id: 'gold-damaged',
+    name: 'Damaged Gold',
+    category: 'gold',
+    type: 'physical',
+    color: '#cccccc',
+    metalness: 1.0,
+    roughness: 0.35,
+    emissive: '#a8906d',
+    emissiveIntensity: 0.01,
+    clearcoat: 0.4,
+    clearcoatRoughness: 0.5,
+    envMapIntensity: 1.0,
+    previewGradient: 'linear-gradient(135deg, #e0d0b0 0%, #cccccc 50%, #a09080 100%)'
+  },
 
   // ===== COSMIC GRADIENT =====
+  // Note: gradient1-6 from JSON use texture-based gradients (baseColorTexture and metallicRoughnessTexture)
+  // These are simplified versions using solid colors with gradient preview for UI
   {
-    id: 'gradient-sunset',
-    name: 'Cosmic Sunset',
+    id: 'gradient1',
+    name: 'Gradient 1',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#FF61D8', '#FF8A3C', '#FFE53F'],
-    gradientDirection: 'diagonal',
-    metalness: 0.4,
-    roughness: 0.2,
-    emissiveIntensity: 0.25,
-    previewGradient: 'linear-gradient(135deg, #FF61D8 0%, #FF8A3C 50%, #FFE53F 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(135deg, #ffffff 0%, #cccccc 50%, #808080 100%)'
   },
   {
-    id: 'gradient-ocean',
-    name: 'Ocean Depths',
+    id: 'gradient2',
+    name: 'Gradient 2',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#0052CC', '#00B3E6', '#81E6FF'],
-    gradientDirection: 'vertical',
-    metalness: 0.3,
-    roughness: 0.15,
-    emissiveIntensity: 0.2,
-    previewGradient: 'linear-gradient(180deg, #0052CC 0%, #00B3E6 50%, #81E6FF 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 50%, #808080 100%)'
   },
   {
-    id: 'gradient-forest',
-    name: 'Mystic Forest',
+    id: 'gradient3',
+    name: 'Gradient 3',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#1A5F3F', '#2E8B57', '#98D982'],
-    gradientDirection: 'radial',
-    metalness: 0.25,
-    roughness: 0.3,
-    emissiveIntensity: 0.15,
-    previewGradient: 'radial-gradient(circle, #1A5F3F 0%, #2E8B57 50%, #98D982 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #999999 100%)'
   },
   {
-    id: 'gradient-fire',
-    name: 'Phoenix Flame',
+    id: 'gradient4',
+    name: 'Gradient 4',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#FF1744', '#FF6B35', '#FFCA28'],
-    gradientDirection: 'diagonal',
-    metalness: 0.5,
-    roughness: 0.1,
-    emissiveIntensity: 0.35,
-    previewGradient: 'linear-gradient(135deg, #FF1744 0%, #FF6B35 50%, #FFCA28 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(180deg, #f0f0f0 0%, #cccccc 50%, #a0a0a0 100%)'
   },
   {
-    id: 'gradient-space',
-    name: 'Nebula Dreams',
+    id: 'gradient5',
+    name: 'Gradient 5',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#0D0221', '#4A1C7D', '#B535F6'],
-    gradientDirection: 'vertical',
-    metalness: 0.7,
-    roughness: 0.05,
-    emissiveIntensity: 0.4,
-    previewGradient: 'linear-gradient(180deg, #0D0221 0%, #4A1C7D 50%, #B535F6 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'radial-gradient(circle, #ffffff 0%, #cccccc 50%, #808080 100%)'
   },
   {
-    id: 'gradient-aurora',
-    name: 'Aurora Borealis',
+    id: 'gradient6',
+    name: 'Gradient 6',
     category: 'gradient',
-    type: 'gradient',
+    type: 'physical',
     isPro: true,
-    gradientColors: ['#00F5FF', '#7DF9FF', '#E0B0FF'],
-    gradientDirection: 'horizontal',
-    metalness: 0.35,
-    roughness: 0.2,
-    emissiveIntensity: 0.3,
-    previewGradient: 'linear-gradient(90deg, #00F5FF 0%, #7DF9FF 50%, #E0B0FF 100%)'
-  },
-  {
-    id: 'gradient-neon',
-    name: 'Cyber Neon',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#FF10F0', '#00FFF0', '#BFFF00'],
-    gradientDirection: 'diagonal',
-    metalness: 0.6,
-    roughness: 0.08,
-    emissiveIntensity: 0.45,
-    previewGradient: 'linear-gradient(135deg, #FF10F0 0%, #00FFF0 50%, #BFFF00 100%)'
-  },
-  {
-    id: 'gradient-royal',
-    name: 'Royal Amethyst',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#6B0F9F', '#9B59B6', '#E8B4F3'],
-    gradientDirection: 'vertical',
-    metalness: 0.45,
-    roughness: 0.18,
-    emissiveIntensity: 0.2,
-    previewGradient: 'linear-gradient(180deg, #6B0F9F 0%, #9B59B6 50%, #E8B4F3 100%)'
-  },
-  {
-    id: 'gradient-tropical',
-    name: 'Tropical Sunset',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#FF0080', '#FF8C94', '#FFD3B6'],
-    gradientDirection: 'radial',
-    metalness: 0.35,
-    roughness: 0.25,
-    emissiveIntensity: 0.25,
-    previewGradient: 'radial-gradient(circle, #FF0080 0%, #FF8C94 50%, #FFD3B6 100%)'
-  },
-  {
-    id: 'gradient-holographic',
-    name: 'Holographic',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#A8E6CF', '#FFD3B6', '#FFAAA5'],
-    gradientDirection: 'diagonal',
-    metalness: 0.8,
-    roughness: 0.02,
-    emissiveIntensity: 0.3,
-    previewGradient: 'linear-gradient(135deg, #A8E6CF 0%, #FFD3B6 50%, #FFAAA5 100%)'
-  },
-  {
-    id: 'gradient-vaporwave',
-    name: 'Vaporwave',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#FF71CE', '#B967FF', '#05FFA1'],
-    gradientDirection: 'horizontal',
-    metalness: 0.55,
-    roughness: 0.12,
-    emissiveIntensity: 0.35,
-    previewGradient: 'linear-gradient(90deg, #FF71CE 0%, #B967FF 50%, #05FFA1 100%)'
-  },
-  {
-    id: 'gradient-ice',
-    name: 'Arctic Ice',
-    category: 'gradient',
-    type: 'gradient',
-    isPro: true,
-    gradientColors: ['#B4E7FF', '#5CC9F5', '#4169E1'],
-    gradientDirection: 'vertical',
-    metalness: 0.65,
-    roughness: 0.05,
-    emissiveIntensity: 0.15,
-    previewGradient: 'linear-gradient(180deg, #B4E7FF 0%, #5CC9F5 50%, #4169E1 100%)'
+    color: '#cccccc', // Base color factor from JSON
+    metalness: 1.0,
+    roughness: 0.5, // Default since texture-based
+    envMapIntensity: 1.2,
+    previewGradient: 'linear-gradient(45deg, #e8e8e8 0%, #cccccc 50%, #999999 100%)'
   },
 
   // ===== GLASS MATERIALS =====

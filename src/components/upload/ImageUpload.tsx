@@ -290,15 +290,41 @@ export default function ImageUpload({
     }
   };
 
+  // Check if this is a first-time user (no file uploaded yet)
+  const isFirstTime = !state.uploadedFile && !state.isProcessing && !state.error;
+
   return (
     <div className={`space-y-4 ${className}`}>
+      {/* First Time User Hint */}
+      {isFirstTime && (
+        <div className="relative">
+          <div className="absolute -top-2 -left-2 z-10">
+            <div className="relative">
+              <svg className="w-8 h-8 text-blue-500 animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L8 6h3v10h2V6h3l-4-4z"/>
+                <circle cx="12" cy="20" r="2"/>
+              </svg>
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+              </span>
+            </div>
+          </div>
+          <div className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2 pl-10">
+            Start here! Upload your logo
+          </div>
+        </div>
+      )}
+
       {/* Main Upload Area */}
       <div
         className={`
           relative border border-dashed rounded-md p-3 text-center transition-all duration-200
           ${state.isDragOver 
             ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+            : isFirstTime
+              ? 'border-blue-400 dark:border-blue-500 bg-blue-50/50 dark:bg-blue-900/10 animate-pulse-subtle'
+              : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
           }
           ${disabled || state.isProcessing 
             ? 'opacity-50 cursor-not-allowed' 

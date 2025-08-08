@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { GlobalExportProvider } from "@/components/export/GlobalExportProvider";
+import { ModalProvider } from "@/context/ModalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,9 +58,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GlobalExportProvider>
-          <Header />
-          {children}
-          <Footer />
+          <ModalProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ModalProvider>
         </GlobalExportProvider>
       </body>
     </html>

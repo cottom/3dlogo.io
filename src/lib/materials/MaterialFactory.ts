@@ -73,37 +73,63 @@ export class MaterialFactory {
   }
 
   private createStandardMaterial(preset: MaterialPreset): THREE.MeshStandardMaterial {
-    return this.builder
+    const builder = this.builder
       .reset()
       .setType('standard')
       .setColor(preset.color || '#ffffff')
-      .setMetalness(preset.metalness || 0)
-      .setRoughness(preset.roughness || 0.5)
+      .setMetalness(preset.metalness ?? 0)
+      .setRoughness(preset.roughness ?? 0.5)
       .setEmissive(preset.emissive || '#000000')
-      .setEmissiveIntensity(preset.emissiveIntensity || 0)
-      .setSide(THREE.DoubleSide)
-      .build() as THREE.MeshStandardMaterial;
+      .setEmissiveIntensity(preset.emissiveIntensity ?? 0);
+    
+    // Set side based on preset
+    const side = preset.side === 'front' ? THREE.FrontSide :
+                 preset.side === 'back' ? THREE.BackSide :
+                 THREE.DoubleSide;
+    builder.setSide(side);
+    
+    // Set environment map intensity if specified
+    if (preset.envMapIntensity !== undefined) {
+      builder.setEnvMapIntensity(preset.envMapIntensity);
+    }
+    
+    // Set normal scale if specified
+    if (preset.normalScale) {
+      builder.setNormalScale(preset.normalScale[0], preset.normalScale[1]);
+    }
+    
+    return builder.build() as THREE.MeshStandardMaterial;
   }
 
   private createPhysicalMaterial(preset: MaterialPreset): THREE.MeshPhysicalMaterial {
-    const material = this.builder
+    const builder = this.builder
       .reset()
       .setType('physical')
       .setColor(preset.color || '#ffffff')
-      .setMetalness(preset.metalness || 0)
-      .setRoughness(preset.roughness || 0.5)
+      .setMetalness(preset.metalness ?? 0)
+      .setRoughness(preset.roughness ?? 0.5)
       .setEmissive(preset.emissive || '#000000')
-      .setEmissiveIntensity(preset.emissiveIntensity || 0)
-      .setClearcoat(preset.clearcoat || 0)
-      .setClearcoatRoughness(preset.clearcoatRoughness || 0)
-      .setSide(THREE.DoubleSide)
-      .build() as THREE.MeshPhysicalMaterial;
-
+      .setEmissiveIntensity(preset.emissiveIntensity ?? 0)
+      .setClearcoat(preset.clearcoat ?? 0)
+      .setClearcoatRoughness(preset.clearcoatRoughness ?? 0);
+    
+    // Set side based on preset
+    const side = preset.side === 'front' ? THREE.FrontSide :
+                 preset.side === 'back' ? THREE.BackSide :
+                 THREE.DoubleSide;
+    builder.setSide(side);
+    
+    // Set environment map intensity if specified
     if (preset.envMapIntensity !== undefined) {
-      material.envMapIntensity = preset.envMapIntensity;
+      builder.setEnvMapIntensity(preset.envMapIntensity);
     }
-
-    return material;
+    
+    // Set normal scale if specified
+    if (preset.normalScale) {
+      builder.setNormalScale(preset.normalScale[0], preset.normalScale[1]);
+    }
+    
+    return builder.build() as THREE.MeshPhysicalMaterial;
   }
 
   createCustomMaterial(params: Partial<THREE.MeshStandardMaterialParameters>): THREE.Material {

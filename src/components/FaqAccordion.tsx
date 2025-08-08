@@ -9,7 +9,8 @@ export type FaqItem = {
 
 export default function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const contentRefs = useRef<(HTMLDivElement)[]>([]);
+
 
   const toggle = (idx: number) => {
     setOpenIndex((curr) => (curr === idx ? null : idx));
@@ -55,7 +56,7 @@ export default function FaqAccordion({ items }: { items: FaqItem[] }) {
             }}
           >
             <div
-              ref={(el) => (contentRefs.current[idx] = el)}
+              ref={(el) => {contentRefs.current[idx] = el!}}
               className="px-6 pb-6 text-gray-600 dark:text-gray-300 leading-relaxed"
             >
               {item.answer}

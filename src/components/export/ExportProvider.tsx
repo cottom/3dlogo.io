@@ -106,7 +106,7 @@ export function ExportProvider({ children }: { children: React.ReactNode }) {
           break;
         
         case 'mp4':
-          result = await exporter.exportVideo(5, 30, options, handleProgress);
+          result = await exporter.exportVideo(logoMesh, 5, 30, options, handleProgress);
           break;
         
         default:

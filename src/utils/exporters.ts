@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
 import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
+import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 
 // Extend Window interface for MediaRecorder types
 declare global {
@@ -13,12 +14,18 @@ declare global {
   }
 }
 
+export type AspectRatio = '1:1' | '4:3' | '16:9' | '9:16';
+export type ResolutionPreset = '480p' | '720p' | '1080p' | '2160p' | 'custom';
+
 export interface ExportOptions {
   format: 'gltf' | 'glb' | 'stl' | 'obj' | 'png' | 'jpg' | 'mp4';
   quality?: number;
   resolution?: [number, number];
   transparent?: boolean;
   binary?: boolean;
+  // Video specific options
+  aspectRatio?: AspectRatio;
+  resolutionPreset?: ResolutionPreset;
 }
 
 export interface ExportResult {
@@ -31,6 +38,72 @@ export interface ExportResult {
 export interface ExportProgress {
   progress: number;
   stage: string;
+}
+
+// Helper function to get resolution based on aspect ratio and preset
+export function getVideoResolution(aspectRatio: AspectRatio = '16:9', preset: ResolutionPreset = '1080p'): [number, number] {
+  const resolutions: Record<ResolutionPreset, Record<AspectRatio, [number, number]>> = {
+    '480p': {
+      '1:1': [480, 480],
+      '4:3': [640, 480],
+      '16:9': [854, 480],
+      '9:16': [480, 854]
+    },
+    '720p': {
+      '1:1': [720, 720],
+      '4:3': [960, 720],
+      '16:9': [1280, 720],
+      '9:16': [720, 1280]
+    },
+    '1080p': {
+      '1:1': [1080, 1080],
+      '4:3': [1440, 1080],
+      '16:9': [1920, 1080],
+      '9:16': [1080, 1920]
+    },
+    '2160p': {
+      '1:1': [2160, 2160],
+      '4:3': [2880, 2160],
+      '16:9': [3840, 2160],
+      '9:16': [2160, 3840]
+    },
+    'custom': {
+      '1:1': [1024, 1024],
+      '4:3': [1024, 768],
+      '16:9': [1920, 1080],
+      '9:16': [1080, 1920]
+    }
+  };
+
+  return resolutions[preset][aspectRatio];
+}
+
+// Helper function to get human-readable labels
+export function getAspectRatioLabel(ratio: AspectRatio): string {
+  const labels: Record<AspectRatio, string> = {
+    '1:1': 'Square (1:1)',
+    '4:3': 'Standard (4:3)',
+    '16:9': 'Widescreen (16:9)',
+    '9:16': 'Portrait (9:16)'
+  };
+  return labels[ratio];
+}
+
+export function getResolutionLabel(preset: ResolutionPreset): string {
+  const labels: Record<ResolutionPreset, string> = {
+    '480p': '480p (SD)',
+    '720p': '720p (HD)',
+    '1080p': '1080p (Full HD)',
+    '2160p': '2160p (4K)',
+    'custom': 'Custom'
+  };
+  return labels[preset];
+}
+
+// Get resolution string for display
+export function getResolutionDisplay(aspectRatio: AspectRatio, preset: ResolutionPreset): string {
+  const [width, height] = getVideoResolution(aspectRatio, preset);
+  return `${width}×${height}`;
 }
 
 export class LogoExporter {
@@ -285,113 +358,265 @@ export class LogoExporter {
   }
 
   async exportVideo(
+    mesh: THREE.Mesh | null,
     duration: number = 5,
     fps: number = 30,
     options: ExportOptions,
     onProgress?: (progress: ExportProgress) => void
   ): Promise<ExportResult> {
     return new Promise((resolve, reject) => {
+      (async () => {
+      // Store original state before any modifications
+      const originalSize = new THREE.Vector2();
+      this.renderer.getSize(originalSize);
+      const originalCameraPosition = this.camera.position.clone();
+      const originalCameraRotation = this.camera.rotation.clone();
+      const originalCameraAspect = this.camera.aspect;
+      
+      // Store original mesh state if provided
+      let originalRotation: THREE.Euler | null = null;
+      let originalPosition: THREE.Vector3 | null = null;
+      const originalSceneRotation = this.scene.rotation.y;
+      
+      if (mesh) {
+        originalRotation = mesh.rotation.clone();
+        originalPosition = mesh.position.clone();
+      }
+      
       try {
-        // Check if MediaRecorder is supported
-        if (!window.MediaRecorder) {
-          reject(new Error('Video recording is not supported in your browser. Please use Chrome or Firefox.'));
-          return;
+        onProgress?.({ progress: 10, stage: 'Setting up MP4 recording...' });
+
+        let width: number;
+        let height: number;
+        
+        // Determine resolution based on options
+        if (options.resolution) {
+          // Use custom resolution if provided
+          [width, height] = options.resolution;
+        } else if (options.aspectRatio && options.resolutionPreset) {
+          // Use aspect ratio and preset
+          [width, height] = getVideoResolution(options.aspectRatio, options.resolutionPreset);
+        } else {
+          // Default to 16:9 1080p
+          [width, height] = getVideoResolution('16:9', '1080p');
+        }
+        
+        // Ensure dimensions are even (required for video encoding)
+        width = Math.floor(width / 2) * 2;
+        height = Math.floor(height / 2) * 2;
+        
+        // Validate resolution doesn't exceed codec limits for 2160p
+        const maxPixels = 3840 * 2160; // 4K limit
+        if (width * height > maxPixels) {
+          // Scale down proportionally
+          const scale = Math.sqrt(maxPixels / (width * height));
+          width = Math.floor(width * scale / 2) * 2;
+          height = Math.floor(height * scale / 2) * 2;
+        }
+        
+        // Temporarily resize renderer for video export
+        this.renderer.setSize(width, height);
+        
+        // Update camera aspect ratio to match video dimensions
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        
+        // Frame the model properly in the view
+        let modelCenter = new THREE.Vector3();
+        if (mesh) {
+          // Calculate bounding box of the mesh
+          const box = new THREE.Box3().setFromObject(mesh);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          
+          // Calculate the maximum dimension
+          const maxDim = Math.max(size.x, size.y, size.z);
+          
+          // Calculate camera distance to fit the object
+          const fov = this.camera.fov * (Math.PI / 180);
+          const cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.5; // 1.5 for some padding
+          
+          // Position camera to look at center
+          this.camera.position.set(center.x, center.y, center.z + cameraZ);
+          this.camera.lookAt(center);
+          this.camera.updateProjectionMatrix();
+          
+          // Store center for rotation
+          modelCenter = center;
         }
 
-        onProgress?.({ progress: 10, stage: 'Setting up video recording...' });
-
-        const canvas = this.renderer.domElement;
-        const stream = canvas.captureStream(fps);
-        
-        // Setup MediaRecorder with proper codec
-        const mimeType = 'video/webm;codecs=vp9';
-        const alternativeMimeType = 'video/webm';
-        
-        let selectedMimeType = mimeType;
-        if (!MediaRecorder.isTypeSupported(mimeType)) {
-          if (MediaRecorder.isTypeSupported(alternativeMimeType)) {
-            selectedMimeType = alternativeMimeType;
-          } else {
-            reject(new Error('No suitable video codec found. Video export is not supported.'));
-            return;
-          }
-        }
-
-        const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: selectedMimeType,
-          videoBitsPerSecond: 2500000 // 2.5 Mbps
+        // Create MP4 muxer
+        const muxer = new Muxer({
+          target: new ArrayBufferTarget(),
+          video: {
+            codec: 'avc',
+            width,
+            height,
+            frameRate: fps
+          },
+          fastStart: 'in-memory'
         });
-
-        const chunks: Blob[] = [];
-        
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            chunks.push(event.data);
-          }
-        };
-
-        mediaRecorder.onstop = () => {
-          onProgress?.({ progress: 90, stage: 'Finalizing video...' });
-          
-          const blob = new Blob(chunks, { type: 'video/webm' });
-          
-          onProgress?.({ progress: 100, stage: 'Export complete!' });
-          
-          resolve({
-            data: blob,
-            filename: 'logo.webm', // Changed to webm as MP4 requires transcoding
-            size: blob.size,
-            mimeType: 'video/webm',
-          });
-        };
-
-        mediaRecorder.onerror = (event: any) => {
-          reject(new Error(`Video recording failed: ${event.error?.message || 'Unknown error'}`));
-        };
 
         onProgress?.({ progress: 30, stage: 'Recording animation...' });
 
-        // Start recording
-        mediaRecorder.start();
+        // Create VideoEncoder
+        const videoEncoder = new VideoEncoder({
+          output: (chunk, meta) => {
+            muxer.addVideoChunk(chunk, meta);
+          },
+          error: (error) => {
+            reject(new Error(`Video encoder error: ${error}`));
+          }
+        });
 
-        // Animate the logo during recording
-        const startTime = Date.now();
+        // Configure encoder with appropriate codec level based on resolution
+        // Select codec level based on pixel count
+        const pixelCount = width * height;
+        let codecString: string;
+        let bitrate: number;
+        
+        if (pixelCount <= 414720) { // 720x576 - Level 3.0
+          codecString = 'avc1.4d001e'; // Main Profile, Level 3.0
+          bitrate = 2_000_000; // 2 Mbps
+        } else if (pixelCount <= 921600) { // 1280x720 - Level 3.1
+          codecString = 'avc1.4d001f'; // Main Profile, Level 3.1
+          bitrate = 4_000_000; // 4 Mbps
+        } else if (pixelCount <= 2073600) { // 1920x1080 - Level 4.0
+          codecString = 'avc1.4d0028'; // Main Profile, Level 4.0
+          bitrate = 8_000_000; // 8 Mbps
+        } else if (pixelCount <= 8294400) { // 3840x2160 - Level 5.1
+          codecString = 'avc1.4d0033'; // Main Profile, Level 5.1
+          bitrate = 20_000_000; // 20 Mbps for 4K
+        } else {
+          // Fallback to Level 5.2 for very high resolutions
+          codecString = 'avc1.4d0034'; // Main Profile, Level 5.2
+          bitrate = 30_000_000; // 30 Mbps
+        }
+        
+        videoEncoder.configure({
+          codec: codecString,
+          width,
+          height,
+          bitrate,
+          framerate: fps,
+          hardwareAcceleration: 'prefer-hardware',
+          latencyMode: 'quality'
+        });
+
+        // Record frames
         const totalFrames = duration * fps;
         let frameCount = 0;
 
-        const recordFrame = () => {
-          const elapsed = (Date.now() - startTime) / 1000;
+        // Function to capture and encode a frame
+        const captureFrame = async (timestamp: number) => {
+          // Create ImageBitmap from canvas with proper color space
+          const bitmap = await createImageBitmap(this.renderer.domElement, {
+            colorSpaceConversion: 'none'
+          });
           
-          if (elapsed < duration) {
-            // Update progress
-            frameCount++;
-            const progress = Math.min(30 + (frameCount / totalFrames) * 50, 80);
-            onProgress?.({ progress, stage: `Recording frame ${frameCount}/${totalFrames}...` });
-
-            // Rotate the scene for animation
-            this.scene.rotation.y = (elapsed / duration) * Math.PI * 2;
-            
-            // Render frame
-            this.renderer.render(this.scene, this.camera);
-            
-            // Continue recording
-            requestAnimationFrame(recordFrame);
-          } else {
-            // Stop recording
-            mediaRecorder.stop();
-            
-            // Reset scene rotation
-            this.scene.rotation.y = 0;
-            this.renderer.render(this.scene, this.camera);
-          }
+          // Create VideoFrame with proper timestamp in microseconds
+          const frame = new VideoFrame(bitmap, {
+            timestamp: Math.round(timestamp * 1000000), // Convert seconds to microseconds
+            displayWidth: width,
+            displayHeight: height
+          });
+          
+          // Encode frame with proper keyframe interval
+          const isKeyFrame = frameCount === 0 || frameCount % 60 === 0; // Keyframe every 2 seconds at 30fps
+          videoEncoder.encode(frame, { keyFrame: isKeyFrame });
+          frame.close();
+          bitmap.close();
         };
 
-        // Start animation loop
-        requestAnimationFrame(recordFrame);
+        // Animation loop
+        for (let i = 0; i < totalFrames; i++) {
+          const elapsed = i / fps;
+          
+          // Update progress
+          frameCount = i;
+          const progress = Math.min(30 + (frameCount / totalFrames) * 50, 80);
+          onProgress?.({ progress, stage: `Encoding frame ${frameCount + 1}/${totalFrames}...` });
+
+          // Rotate camera around the model for better 3D visualization
+          if (mesh) {
+            // Calculate camera position for orbital rotation
+            const angle = (elapsed / duration) * Math.PI * 2;
+            const radius = this.camera.position.distanceTo(modelCenter);
+            
+            // Keep the same height (y) but rotate around x and z
+            const x = modelCenter.x + radius * Math.sin(angle);
+            const z = modelCenter.z + radius * Math.cos(angle);
+            
+            this.camera.position.set(x, this.camera.position.y, z);
+            this.camera.lookAt(modelCenter);
+          } else {
+            // Fallback to rotating the entire scene if no mesh is provided
+            this.scene.rotation.y = (elapsed / duration) * Math.PI * 2;
+          }
+          
+          // Render frame
+          this.renderer.render(this.scene, this.camera);
+          
+          // Capture and encode frame
+          await captureFrame(elapsed);
+          
+          // Process in batches to avoid blocking the UI
+          if (i % 10 === 0) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+          }
+        }
+
+        onProgress?.({ progress: 85, stage: 'Finalizing MP4...' });
+
+        // Flush encoder
+        await videoEncoder.flush();
+        videoEncoder.close();
+
+        // Finalize muxer
+        muxer.finalize();
+
+        // Get the MP4 data
+        const { buffer } = muxer.target as ArrayBufferTarget;
+        const mp4Blob = new Blob([buffer], { type: 'video/mp4' });
+
+        onProgress?.({ progress: 100, stage: 'Export complete!' });
+
+        resolve({
+          data: mp4Blob,
+          filename: 'logo.mp4',
+          size: mp4Blob.size,
+          mimeType: 'video/mp4',
+        });
 
       } catch (error) {
-        reject(new Error(`Video export failed: ${error instanceof Error ? error.message : error}`));
+        reject(new Error(`MP4 export failed: ${error instanceof Error ? error.message : error}`));
+      } finally {
+        // Always restore original state, whether export succeeded or failed
+        
+        // Reset mesh to original state
+        if (mesh && originalRotation) {
+          mesh.rotation.copy(originalRotation);
+          if (originalPosition) {
+            mesh.position.copy(originalPosition);
+          }
+        }
+        
+        // Reset scene rotation
+        this.scene.rotation.y = originalSceneRotation;
+        
+        // Restore original camera state
+        this.camera.position.copy(originalCameraPosition);
+        this.camera.rotation.copy(originalCameraRotation);
+        this.camera.aspect = originalCameraAspect;
+        this.camera.updateProjectionMatrix();
+        
+        // Restore original renderer size
+        this.renderer.setSize(originalSize.x, originalSize.y);
+        
+        // Force a render to update the view
+        this.renderer.render(this.scene, this.camera);
       }
+      })();
     });
   }
 

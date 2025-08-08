@@ -124,37 +124,14 @@ export default function Home() {
             <div className="mx-auto max-w-4xl">
               <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-2xl min-h-[400px] overflow-hidden border border-gray-200 dark:border-gray-700">
                 {/* Placeholder 3D effect image */}
-                <Image
-                  src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=600&fit=crop&auto=format"
-                  alt="Interactive 3D logo creator preview showing real-time editing capabilities"
-                  fill
-                  className="object-cover opacity-30"
-                  priority
+                <video
+                  src="https://files.3dlogo.io/logoexample.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div
-                  className="absolute inset-0 bg-gradient-to-br from-white/70 via-transparent to-black/30 dark:from-black/40 dark:via-transparent dark:to-black/70"
-                  aria-hidden="true"
-                />
-                <div className="relative z-10 p-8 min-h-[400px] flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-300">
-                      <span className="text-white font-bold text-3xl">3D</span>
-                    </div>
-                    <p className="text-gray-900 dark:text-white text-xl font-semibold mb-2">
-                      Interactive 3D Preview
-                    </p>
-                    <p className="text-gray-700 dark:text-gray-300 text-sm">
-                      Upload your logo or start from scratch
-                    </p>
-                    <Link
-                      href="/editor"
-                      className="inline-block mt-4 text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                      title="Try the live 3D logo editor"
-                    >
-                      Try Live Editor →
-                    </Link>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

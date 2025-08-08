@@ -1,0 +1,1028 @@
+[
+  {
+    "alphaMode": "BLEND",
+    "extensions": {
+      "S8S_v3d_materials": {
+        "alphaToCoverage": true,
+        "gtaoVisible": true,
+        "materialIndex": 0,
+        "nodeGraph": {
+          "edges": [
+            {
+              "fromNode": 0,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 4
+            },
+            {
+              "fromNode": 1,
+              "fromOutput": 2,
+              "toInput": 0,
+              "toNode": 0
+            },
+            {
+              "fromNode": 2,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 3
+            },
+            {
+              "fromNode": 4,
+              "fromOutput": 0,
+              "toInput": 19,
+              "toNode": 2
+            },
+            {
+              "fromNode": 4,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 2
+            },
+            {
+              "fromNode": 4,
+              "fromOutput": 0,
+              "toInput": 21,
+              "toNode": 2
+            }
+          ],
+          "nodes": [
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1,
+                  1
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Mapping",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "MAPPING_BL",
+              "vectorType": "POINT"
+            },
+            {
+              "inputs": [],
+              "is_active_output": false,
+              "name": "Texture Coordinate",
+              "object": -1,
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "TEX_COORD_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  1
+                ],
+                0,
+                [
+                  1,
+                  0.20000000298023224,
+                  0.10000000149011612
+                ],
+                [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  1
+                ],
+                1.399999976158142,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0.5,
+                0,
+                0.029999999329447746,
+                1.4500000476837158,
+                0,
+                0,
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                1,
+                1,
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Principled BSDF",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "BSDF_PRINCIPLED_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                0
+              ],
+              "is_active_output": true,
+              "name": "Material Output",
+              "outputs": [],
+              "type": "OUTPUT_MATERIAL_BL"
+            },
+            {
+              "alphaMode": "STRAIGHT",
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Image Texture",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                0
+              ],
+              "projection": "FLAT",
+              "projectionBlend": 0,
+              "texture": 0,
+              "type": "TEX_IMAGE_BL"
+            }
+          ]
+        },
+        "useCastShadows": true
+      }
+    },
+    "name": "camera_bg"
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Chrome_Clean_Optimised",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "roughnessFactor": 0.15000000596046448
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Chrome_rough_optimised",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "metallicRoughnessTexture": {
+        "index": 1
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Corrugated_Steel_Optimised",
+    "normalTexture": {
+      "index": 3
+    },
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 2
+      },
+      "roughnessFactor": 0.15000000596046448
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Damaged_Gold_Optimised",
+    "normalTexture": {
+      "index": 6
+    },
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 4
+      },
+      "metallicRoughnessTexture": {
+        "index": 5
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Damaged_Metal_optimised",
+    "normalTexture": {
+      "index": 8
+    },
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 9
+      },
+      "metallicRoughnessTexture": {
+        "index": 7
+      }
+    }
+  },
+  {
+    "alphaMode": "BLEND",
+    "extensions": {
+      "S8S_v3d_materials": {
+        "alphaToCoverage": true,
+        "gtaoVisible": true,
+        "materialIndex": 0,
+        "nodeGraph": {
+          "edges": [
+            {
+              "fromNode": 0,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 1
+            },
+            {
+              "fromNode": 2,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 0
+            }
+          ],
+          "nodes": [
+            {
+              "inputs": [
+                [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  1
+                ],
+                0,
+                [
+                  1,
+                  0.20000000298023224,
+                  0.10000000149011612
+                ],
+                [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  1
+                ],
+                1.399999976158142,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0.5,
+                0,
+                0.029999999329447746,
+                1.4500000476837158,
+                0,
+                0,
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                1,
+                1,
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Principled BSDF",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "BSDF_PRINCIPLED_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                0
+              ],
+              "is_active_output": true,
+              "name": "Material Output",
+              "outputs": [],
+              "type": "OUTPUT_MATERIAL_BL"
+            },
+            {
+              "inputs": [],
+              "is_active_output": false,
+              "name": "RGB",
+              "outputs": [
+                [
+                  0.021980950608849525,
+                  0.021980950608849525,
+                  0.021980950608849525,
+                  1
+                ]
+              ],
+              "type": "RGB_BL"
+            }
+          ]
+        },
+        "useCastShadows": true
+      }
+    },
+    "name": "env_sphere"
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Gold_Clean_Optimised",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.6583746671676636,
+        0.42869019508361816,
+        0.03820450231432915,
+        1
+      ],
+      "roughnessFactor": 0.15000000596046448
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "Gold_Rough_Optimised",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.6583746671676636,
+        0.42869019508361816,
+        0.03820450231432915,
+        1
+      ],
+      "metallicRoughnessTexture": {
+        "index": 1
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient1",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 11
+      },
+      "metallicRoughnessTexture": {
+        "index": 12
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient2",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 13
+      },
+      "metallicRoughnessTexture": {
+        "index": 14
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient3",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 15
+      },
+      "metallicRoughnessTexture": {
+        "index": 16
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient4",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 17
+      },
+      "metallicRoughnessTexture": {
+        "index": 18
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient5",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 19
+      },
+      "metallicRoughnessTexture": {
+        "index": 20
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "gradient6",
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 21
+      },
+      "metallicRoughnessTexture": {
+        "index": 22
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "name": "MetalPlates_optimised",
+    "normalTexture": {
+      "index": 24
+    },
+    "pbrMetallicRoughness": {
+      "baseColorFactor": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1
+      ],
+      "baseColorTexture": {
+        "index": 25
+      },
+      "metallicRoughnessTexture": {
+        "index": 23
+      }
+    }
+  },
+  {
+    "alphaMode": "OPAQUE",
+    "extensions": {
+      "S8S_v3d_materials": {
+        "gtaoVisible": true,
+        "materialIndex": 0,
+        "nodeGraph": {
+          "edges": [
+            {
+              "fromNode": 0,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 1
+            },
+            {
+              "fromNode": 5,
+              "fromOutput": 0,
+              "toInput": 6,
+              "toNode": 2
+            },
+            {
+              "fromNode": 3,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 2
+            },
+            {
+              "fromNode": 2,
+              "fromOutput": 2,
+              "toInput": 0,
+              "toNode": 0
+            },
+            {
+              "fromNode": 4,
+              "fromOutput": 0,
+              "toInput": 2,
+              "toNode": 7
+            },
+            {
+              "fromNode": 8,
+              "fromOutput": 0,
+              "toInput": 2,
+              "toNode": 4
+            },
+            {
+              "fromNode": 6,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 7
+            },
+            {
+              "fromNode": 7,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 5
+            }
+          ],
+          "nodes": [
+            {
+              "inputs": [
+                [
+                  0.05087608844041824,
+                  0.05087608844041824,
+                  0.05087608844041824,
+                  1
+                ],
+                1
+              ],
+              "is_active_output": false,
+              "name": "Background",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "BACKGROUND_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": true,
+              "name": "World Output",
+              "outputs": [],
+              "type": "OUTPUT_WORLD_BL"
+            },
+            {
+              "blendType": "MIX",
+              "clampFactor": true,
+              "clampResult": false,
+              "dataType": "RGBA",
+              "factorMode": "UNIFORM",
+              "inputs": [
+                0.5,
+                [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                0,
+                0,
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0.5,
+                  0.5,
+                  0.5,
+                  1
+                ],
+                [
+                  0.05126946419477463,
+                  0.05126946419477463,
+                  0.05126946419477463,
+                  1
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Mix",
+              "outputs": [
+                0,
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "MIX_BL"
+            },
+            {
+              "inputs": [],
+              "is_active_output": false,
+              "name": "Light Path",
+              "outputs": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "type": "LIGHT_PATH_BL"
+            },
+            {
+              "inputs": [
+                0,
+                0,
+                0
+              ],
+              "is_active_output": false,
+              "name": "Combine XYZ",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "COMBXYZ_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Environment Texture",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "projection": "EQUIRECTANGULAR",
+              "texture": 26,
+              "type": "TEX_ENVIRONMENT_BL"
+            },
+            {
+              "inputs": [],
+              "is_active_output": false,
+              "name": "Texture Coordinate",
+              "object": -1,
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "TEX_COORD_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  1,
+                  1,
+                  1
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Mapping",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "MAPPING_BL",
+              "vectorType": "POINT"
+            },
+            {
+              "inputs": [],
+              "is_active_output": false,
+              "name": "Value",
+              "outputs": [
+                0
+              ],
+              "type": "VALUE_BL"
+            }
+          ]
+        },
+        "useCastShadows": true
+      }
+    },
+    "name": "Verge3D_Environment_World"
+  },
+  {
+    "extensions": {
+      "S8S_v3d_materials": {
+        "nodeGraph": {
+          "edges": [
+            {
+              "fromNode": 1,
+              "fromOutput": 0,
+              "toInput": 0,
+              "toNode": 0
+            }
+          ],
+          "nodes": [
+            {
+              "inputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": true,
+              "name": "Material Output",
+              "outputs": [],
+              "type": "OUTPUT_MATERIAL_BL"
+            },
+            {
+              "inputs": [
+                [
+                  0.800000011920929,
+                  0.800000011920929,
+                  0.800000011920929,
+                  1
+                ],
+                0,
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "is_active_output": false,
+              "name": "Diffuse BSDF",
+              "outputs": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "type": "BSDF_DIFFUSE_BL"
+            }
+          ]
+        },
+        "useCastShadows": true,
+        "useShadows": true
+      }
+    },
+    "name": "v3d_default_material"
+  }
+]

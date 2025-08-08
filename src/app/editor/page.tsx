@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import EditorLayout from "@/components/layout/EditorLayout";
 import Scene from "@/components/canvas/Scene";
 import ImageUpload from "@/components/upload/ImageUpload";
@@ -11,6 +10,7 @@ import EnvironmentControls from "@/components/controls/EnvironmentControls";
 import EditorSeoPage from "@/components/seo/EditorSeoPage"
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import { useInitialLoad } from "@/hooks/useInitialLoad";
+import { useModal } from "@/context/ModalContext";
 import {
   useEditorActions,
   useBevelParams,
@@ -136,7 +136,7 @@ function RightPanel() {
   const { updateAnimation, updateBevelParams } = useEditorActions();
   const animation = useAnimation();
   const bevelParams = useBevelParams();
-  const [showExportModal, setShowExportModal] = useState(false);
+  const { openExportModal } = useModal();
 
   const handleAnimationChange = (
     type: "none" | "rotate" | "bounce" | "float" | "pulse"
@@ -287,7 +287,7 @@ function RightPanel() {
           </h3>
           <button
             type="button"
-            onClick={() => setShowExportModal(true)}
+            onClick={openExportModal}
             className="w-full px-2 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded text-[11px] transition-all duration-200 flex items-center justify-center gap-1 font-medium shadow-md hover:shadow-lg"
           >
             <svg
@@ -312,11 +312,6 @@ function RightPanel() {
         </div>
       </div>
 
-      {/* Export Modal */}
-      <ExportModal
-        isOpen={showExportModal}
-        onClose={() => setShowExportModal(false)}
-      />
     </>
   );
 }
@@ -329,6 +324,7 @@ export default function EditorPage() {
         centerCanvas={<CenterCanvas />}
         rightPanel={<RightPanel />}
       />
+      <ExportModal />
       <EditorSeoPage />
     </>
   );
