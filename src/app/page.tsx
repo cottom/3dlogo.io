@@ -279,37 +279,38 @@ export default function Home() {
               Logo Showcase
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300">
-              Explore stunning 3D logos created with our platform
+              Explore stunning 3D logos
             </p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
-              { material: 'Chrome', gradient: 'from-gray-300 to-gray-500', image: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Gold', gradient: 'from-yellow-400 to-yellow-600', image: 'https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Cosmic', gradient: 'from-purple-500 to-pink-500', image: 'https://images.unsplash.com/photo-1604076913837-52ab5629fba9?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Glass', gradient: 'from-blue-300 to-blue-500', image: 'https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Neon', gradient: 'from-green-400 to-cyan-500', image: 'https://images.unsplash.com/photo-1621266876144-06cca6a58e15?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Holographic', gradient: 'from-pink-400 to-purple-600', image: 'https://images.unsplash.com/photo-1618172193763-c511deb635ca?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Metal', gradient: 'from-slate-400 to-slate-600', image: 'https://images.unsplash.com/photo-1606318801954-d46d46d3360a?w=400&h=400&fit=crop&auto=format' },
-              { material: 'Rainbow', gradient: 'from-red-500 via-yellow-500 to-blue-500', image: 'https://images.unsplash.com/photo-1525909002-1b05e0c869d8?w=400&h=400&fit=crop&auto=format' },
+              {
+                name: 'openai',
+                video: 'https://files.3dlogo.io/openai.mp4'
+              },
+              {
+                name: 'google',
+                video: 'https://files.3dlogo.io/google.mp4'
+              },
+              {
+                name: 'x',
+                video: 'https://files.3dlogo.io/x.mp4'
+              },
+              {
+                name: 'yc',
+                video: 'https://files.3dlogo.io/yc.mp4'
+              }
             ].map((item) => (
-              <div key={item.material} className="group cursor-pointer">
-                <div className={`relative aspect-square rounded-xl bg-gradient-to-br ${item.gradient} shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden`}>
-                  <Image
-                    src={item.image}
-                    alt={`${item.material} style 3D logo example showcasing premium material effects and professional design`}
-                    fill
-                    className="object-cover mix-blend-overlay opacity-50"
-                    loading="lazy"
+              <div key={item.name} className="group cursor-pointer">
+                <div className={`relative aspect-square rounded-xl bg-gradient-to-brshadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden`}>
+                  <video
+                    src={item.video}
+                    muted
+                    autoPlay
+                    loop
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-white font-bold text-2xl drop-shadow-2xl">LOGO</span>
-                  </div>
                 </div>
-                <p className="text-center mt-3 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {item.material} Style
-                </p>
               </div>
             ))}
           </div>

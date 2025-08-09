@@ -26,6 +26,7 @@ export interface ExportOptions {
   // Video specific options
   aspectRatio?: AspectRatio;
   resolutionPreset?: ResolutionPreset;
+  backgroundColor?: string;
 }
 
 export interface ExportResult {
@@ -315,6 +316,10 @@ export class LogoExporter {
 
         if (options.transparent && options.format === 'png') {
           this.renderer.setClearColor(0x000000, 0);
+        } else if (options.backgroundColor) {
+          // Use the provided background color
+          const color = new THREE.Color(options.backgroundColor);
+          this.renderer.setClearColor(color, 1);
         }
 
         onProgress?.({ progress: 60, stage: 'Rendering image...' });
@@ -373,6 +378,10 @@ export class LogoExporter {
       const originalCameraRotation = this.camera.rotation.clone();
       const originalCameraAspect = this.camera.aspect;
       
+      // Store original clear color and alpha
+      const originalClearColor = this.renderer.getClearColor(new THREE.Color());
+      const originalClearAlpha = this.renderer.getClearAlpha();
+      
       // Store original mesh state if provided
       let originalRotation: THREE.Euler | null = null;
       let originalPosition: THREE.Vector3 | null = null;
@@ -420,6 +429,12 @@ export class LogoExporter {
         // Update camera aspect ratio to match video dimensions
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
+        
+        // Set background color if provided
+        if (options.backgroundColor) {
+          const color = new THREE.Color(options.backgroundColor);
+          this.renderer.setClearColor(color, 1);
+        }
         
         // Frame the model properly in the view
         let modelCenter = new THREE.Vector3();
@@ -612,6 +627,9 @@ export class LogoExporter {
         
         // Restore original renderer size
         this.renderer.setSize(originalSize.x, originalSize.y);
+        
+        // Restore original clear color and alpha
+        this.renderer.setClearColor(originalClearColor, originalClearAlpha);
         
         // Force a render to update the view
         this.renderer.render(this.scene, this.camera);

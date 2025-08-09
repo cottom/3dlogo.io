@@ -386,13 +386,13 @@ export async function processImageForVectorization(
  * Validates if the uploaded file is a supported image format
  */
 export function validateImageFile(file: File): { valid: boolean; error?: string } {
-  const supportedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+  const supportedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
   const maxSize = 10 * 1024 * 1024; // 10MB limit
 
   if (!supportedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: 'Unsupported file type. Please upload PNG, JPG, JPEG, or GIF images.',
+      error: 'Unsupported file type. Please upload PNG, JPG, JPEG, GIF, or SVG images.',
     };
   }
 

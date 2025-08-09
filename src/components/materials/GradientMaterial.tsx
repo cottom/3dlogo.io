@@ -17,6 +17,8 @@ const GradientMaterialImpl = shaderMaterial(
     uMetalness: 0.3,
     uRoughness: 0.4,
     uEmissiveIntensity: 0.1,
+    uFresnelPower: 2.0,
+    uSpecularIntensity: 0.5,
   },
   // Vertex shader
   /* glsl */ `
@@ -44,6 +46,8 @@ const GradientMaterialImpl = shaderMaterial(
     uniform float uMetalness;
     uniform float uRoughness;
     uniform float uEmissiveIntensity;
+    uniform float uFresnelPower;
+    uniform float uSpecularIntensity;
     
     varying vec2 vUv;
     varying vec3 vPosition;
@@ -95,13 +99,13 @@ const GradientMaterialImpl = shaderMaterial(
       float diff = max(dot(normal, lightDir), 0.0);
       vec3 diffuse = baseColor * diff;
       
-      // Specular/metallic reflection
+      // Specular/metallic reflection with intensity control
       vec3 reflectDir = reflect(-lightDir, normal);
       float spec = pow(max(dot(viewDirection, reflectDir), 0.0), 32.0);
-      vec3 specular = vec3(1.0) * spec * uMetalness;
+      vec3 specular = vec3(1.0) * spec * uMetalness * uSpecularIntensity;
       
-      // Fresnel effect
-      float fresnel = pow(1.0 - dot(normal, viewDirection), 2.0);
+      // Fresnel effect with power control
+      float fresnel = pow(1.0 - max(dot(normal, viewDirection), 0.0), uFresnelPower);
       vec3 fresnelColor = baseColor * fresnel * uMetalness * 0.5;
       
       // Combine all lighting
@@ -130,10 +134,11 @@ declare module '@react-three/fiber' {
 
 interface GradientMaterialProps {
   preset: MaterialPreset;
+  animate?: boolean;
   children?: React.ReactNode;
 }
 
-export default function GradientMaterial({ preset, children }: GradientMaterialProps) {
+export default function GradientMaterial({ preset, animate = false, children }: GradientMaterialProps) {
   const materialRef = useRef<any>(null);
 
   const { color1, color2, color3, direction } = useMemo(() => {
@@ -167,9 +172,9 @@ export default function GradientMaterial({ preset, children }: GradientMaterialP
     };
   }, [preset]);
 
-  // Animate the material
+  // Animate the material only if enabled
   useFrame((state) => {
-    if (materialRef.current) {
+    if (materialRef.current && animate) {
       materialRef.current.uTime = state.clock.elapsedTime;
     }
   });
@@ -181,9 +186,11 @@ export default function GradientMaterial({ preset, children }: GradientMaterialP
       uColor2={color2}
       uColor3={color3}
       uDirection={direction}
-      uMetalness={preset.metalness || 0.3}
-      uRoughness={preset.roughness || 0.4}
-      uEmissiveIntensity={preset.emissiveIntensity || 0.1}
+      uMetalness={preset.metalness ?? 0.3}
+      uRoughness={preset.roughness ?? 0.4}
+      uEmissiveIntensity={preset.emissiveIntensity ?? 0.1}
+      uFresnelPower={2.0}
+      uSpecularIntensity={0.5}
       side={THREE.DoubleSide}
       transparent={false}
     />

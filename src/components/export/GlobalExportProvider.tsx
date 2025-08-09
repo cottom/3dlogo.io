@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { LogoExporter, ExportOptions, ExportResult, ExportProgress, downloadFile } from '@/utils/exporters';
+import { useBackgroundColor } from '@/store/editorStore';
 
 export interface ExportState {
   isExporting: boolean;
@@ -29,6 +30,7 @@ export function GlobalExportProvider({ children }: { children: React.ReactNode }
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.Camera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const backgroundColor = useBackgroundColor();
   
   const [exportState, setExportState] = useState<ExportState>({
     isExporting: false,
@@ -111,10 +113,14 @@ export function GlobalExportProvider({ children }: { children: React.ReactNode }
       } else if (options.format === 'obj') {
         result = await exporter.exportOBJ(logoMesh, options, handleProgress);
       } else if (options.format === 'png' || options.format === 'jpg') {
-        result = await exporter.exportImage(options, handleProgress);
+        // Add background color to options for image export
+        const imageOptions = { ...options, backgroundColor };
+        result = await exporter.exportImage(imageOptions, handleProgress);
       } else if (options.format === 'mp4') {
         // Video export with default 5 second duration at 30fps
-        result = await exporter.exportVideo(logoMesh, 5, 30, options, handleProgress);
+        // Add background color to options
+        const videoOptions = { ...options, backgroundColor };
+        result = await exporter.exportVideo(logoMesh, 5, 30, videoOptions, handleProgress);
       } else {
         throw new Error(`Unsupported export format: ${options.format}`);
       }
@@ -143,7 +149,7 @@ export function GlobalExportProvider({ children }: { children: React.ReactNode }
       }));
       throw error;
     }
-  }, [handleProgress]);
+  }, [handleProgress, backgroundColor]);
 
   const captureScreenshot = useCallback(async (
     resolution: [number, number] = [1920, 1080],

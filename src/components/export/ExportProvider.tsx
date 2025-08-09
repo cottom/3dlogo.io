@@ -4,6 +4,7 @@ import React, { createContext, useContext, useRef, useCallback, useState } from 
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LogoExporter, ExportOptions, ExportResult, ExportProgress, downloadFile } from '@/utils/exporters';
+import { useBackgroundColor } from '@/store/editorStore';
 
 export interface ExportState {
   isExporting: boolean;
@@ -27,6 +28,7 @@ const ExportContext = createContext<ExportContextType | null>(null);
 
 export function ExportProvider({ children }: { children: React.ReactNode }) {
   const { gl: renderer, scene, camera } = useThree();
+  const backgroundColor = useBackgroundColor();
   const [exportState, setExportState] = useState<ExportState>({
     isExporting: false,
     progress: 0,
@@ -102,11 +104,15 @@ export function ExportProvider({ children }: { children: React.ReactNode }) {
         
         case 'png':
         case 'jpg':
-          result = await exporter.exportImage(options, handleProgress);
+          // Add background color to options for image export
+          const imageOptions = { ...options, backgroundColor };
+          result = await exporter.exportImage(imageOptions, handleProgress);
           break;
         
         case 'mp4':
-          result = await exporter.exportVideo(logoMesh, 5, 30, options, handleProgress);
+          // Add background color to options for video export
+          const videoOptions = { ...options, backgroundColor };
+          result = await exporter.exportVideo(logoMesh, 5, 30, videoOptions, handleProgress);
           break;
         
         default:
@@ -142,7 +148,7 @@ export function ExportProvider({ children }: { children: React.ReactNode }) {
 
       throw error;
     }
-  }, [renderer, scene, camera, handleProgress]);
+  }, [renderer, scene, camera, handleProgress, backgroundColor]);
 
   const captureScreenshot = useCallback(async (
     resolution: [number, number] = [1024, 1024],

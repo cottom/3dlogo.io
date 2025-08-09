@@ -3,22 +3,28 @@ import { MaterialPreset } from '@/data/materials';
 
 export class GradientMaterialFactory {
   private shaderCache: Map<string, THREE.ShaderMaterial> = new Map();
+  private enableAnimation: boolean = false;
 
-  create(preset: MaterialPreset): THREE.ShaderMaterial {
+  create(preset: MaterialPreset, options?: { animate?: boolean }): THREE.ShaderMaterial {
     const cacheKey = this.getCacheKey(preset);
     const cached = this.shaderCache.get(cacheKey);
     if (cached) {
       return cached.clone();
     }
 
-    const material = this.createGradientShaderMaterial(preset);
+    const material = this.createGradientShaderMaterial(preset, options);
     this.shaderCache.set(cacheKey, material);
     return material.clone();
   }
 
-  private createGradientShaderMaterial(preset: MaterialPreset): THREE.ShaderMaterial {
+  setAnimationEnabled(enabled: boolean): void {
+    this.enableAnimation = enabled;
+  }
+
+  private createGradientShaderMaterial(preset: MaterialPreset, options?: { animate?: boolean }): THREE.ShaderMaterial {
     const colors = preset.gradientColors || ['#ff006e', '#fb5607', '#ffbe0b'];
     const direction = this.getDirectionVector(preset.gradientDirection || 'diagonal');
+    const shouldAnimate = options?.animate ?? this.enableAnimation;
 
     const uniforms = {
       uTime: { value: 0 },
@@ -26,11 +32,12 @@ export class GradientMaterialFactory {
       uColor2: { value: new THREE.Color(colors[1] || colors[0]) },
       uColor3: { value: new THREE.Color(colors[2] || colors[1] || colors[0]) },
       uDirection: { value: direction },
-      uMetalness: { value: preset.metalness || 0.3 },
-      uRoughness: { value: preset.roughness || 0.4 },
-      uEmissiveIntensity: { value: preset.emissiveIntensity || 0.1 },
+      uMetalness: { value: preset.metalness ?? 0.3 },
+      uRoughness: { value: preset.roughness ?? 0.4 },
+      uEmissiveIntensity: { value: preset.emissiveIntensity ?? 0.1 },
       uFresnelPower: { value: 2.0 },
       uSpecularIntensity: { value: 0.5 },
+      uAnimate: { value: shouldAnimate ? 1.0 : 0.0 },
       // Standard Three.js uniforms for lighting
       ...THREE.UniformsLib.common,
       ...THREE.UniformsLib.lights,
@@ -84,6 +91,7 @@ export class GradientMaterialFactory {
       uniform float uEmissiveIntensity;
       uniform float uFresnelPower;
       uniform float uSpecularIntensity;
+      uniform float uAnimate;
       
       varying vec2 vUv;
       varying vec3 vNormal;
@@ -96,8 +104,8 @@ export class GradientMaterialFactory {
         vec2 uv = vUv;
         float gradient;
         
-        // Add subtle animation
-        float animOffset = sin(uTime * 0.5) * 0.02;
+        // Add subtle animation only if enabled
+        float animOffset = uAnimate * sin(uTime * 0.5) * 0.02;
         
         // Calculate gradient based on direction
         if (abs(uDirection.x) > 0.9 && abs(uDirection.y) < 0.1) {

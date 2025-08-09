@@ -26,7 +26,7 @@ interface UploadState {
   processingStep: 'upload' | 'image-processing' | 'svg-conversion' | 'complete';
 }
 
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function ImageUpload({
@@ -128,7 +128,52 @@ export default function ImageUpload({
       setLogoFile(file);
       onUploadStart?.();
 
-      // Stage 2: Process image
+      // Check if file is SVG
+      if (file.type === 'image/svg+xml') {
+        // For SVG files, skip conversion and directly process
+        updateProgress(30, 'Processing SVG file...', 'svg-conversion');
+        
+        // Read SVG content
+        const svgContent = await file.text();
+        
+        // Validate SVG
+        updateProgress(60, 'Validating SVG...', 'svg-conversion');
+        const svgValidation = validateSVG(svgContent);
+        if (!svgValidation.valid) {
+          throw new Error(svgValidation.error || 'Invalid SVG file');
+        }
+        
+        // Check complexity
+        const complexity = estimateComplexity(svgContent);
+        if (complexity.level === 'extreme') {
+          console.warn('High complexity SVG detected:', complexity.recommendations);
+        }
+        
+        updateProgress(90, 'Finalizing...', 'complete');
+        
+        // Update store with SVG
+        setSvgContent(svgContent);
+        
+        updateProgress(100, 'SVG upload complete!', 'complete');
+        
+        setState(prev => ({
+          ...prev,
+          isProcessing: false,
+          processingStep: 'complete',
+        }));
+        
+        setLoading(false);
+        onUploadComplete?.({
+          svgContent,
+          width: 0, // These values could be extracted from SVG if needed
+          height: 0,
+          colors: [],
+        });
+        
+        return; // Exit early for SVG files
+      }
+
+      // Stage 2: Process image (for non-SVG files)
       updateProgress(10, 'Starting image processing...', 'image-processing');
       
       // const imageResult = await processImageForVectorization(
@@ -428,7 +473,7 @@ export default function ImageUpload({
                 Upload Image
               </button>
               <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                PNG, JPG, GIF (max 10MB)
+                PNG, JPG, GIF, SVG (max 10MB)
               </p>
             </div>
           )}
@@ -477,7 +522,8 @@ export default function ImageUpload({
         <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
           <p>💡 <strong>Tips for best results:</strong></p>
           <ul className="list-disc list-inside space-y-0.5 ml-4">
-            <li>Use images with clear, solid backgrounds</li>
+            <li>SVG files are processed directly without conversion</li>
+            <li>For images: use clear, white backgrounds</li>
             <li>High contrast between logo and background works best</li>
             <li>Simple designs convert better to 3D</li>
             <li>White or light backgrounds are automatically removed</li>

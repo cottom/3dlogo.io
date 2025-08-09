@@ -339,76 +339,126 @@ export const MATERIAL_PRESETS: MaterialPreset[] = [
   // Note: gradient1-6 from JSON use texture-based gradients (baseColorTexture and metallicRoughnessTexture)
   // These are simplified versions using solid colors with gradient preview for UI
   {
-    id: 'gradient1',
-    name: 'Gradient 1',
+    id: 'gradient-sunset',
+    name: 'Sunset Blaze',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
-    metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'linear-gradient(135deg, #ffffff 0%, #cccccc 50%, #808080 100%)'
+    color: '#ff006e',
+    gradientColors: ['#ff006e', '#fb5607', '#ffbe0b'],
+    gradientDirection: 'diagonal',
+    metalness: 0.8,
+    roughness: 0.3,
+    emissiveIntensity: 0.15,
+    envMapIntensity: 1.5,
+    previewGradient: 'linear-gradient(135deg, #ff006e 0%, #fb5607 50%, #ffbe0b 100%)'
   },
   {
-    id: 'gradient2',
-    name: 'Gradient 2',
+    id: 'gradient-ocean',
+    name: 'Ocean Depths',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
-    metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 50%, #808080 100%)'
+    color: '#8338ec',
+    gradientColors: ['#8338ec', '#3a86ff', '#00bbf9'],
+    gradientDirection: 'diagonal',
+    metalness: 0.7,
+    roughness: 0.25,
+    emissiveIntensity: 0.1,
+    envMapIntensity: 1.8,
+    previewGradient: 'linear-gradient(135deg, #8338ec 0%, #3a86ff 50%, #00bbf9 100%)'
   },
   {
-    id: 'gradient3',
-    name: 'Gradient 3',
+    id: 'gradient-forest',
+    name: 'Forest Aurora',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
-    metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'linear-gradient(90deg, #ffffff 0%, #cccccc 50%, #999999 100%)'
+    color: '#06d6a0',
+    gradientColors: ['#06d6a0', '#ffd166', '#ef476f'],
+    gradientDirection: 'horizontal',
+    metalness: 0.6,
+    roughness: 0.4,
+    emissiveIntensity: 0.08,
+    envMapIntensity: 1.3,
+    previewGradient: 'linear-gradient(90deg, #06d6a0 0%, #ffd166 50%, #ef476f 100%)'
   },
   {
-    id: 'gradient4',
-    name: 'Gradient 4',
+    id: 'gradient-arctic',
+    name: 'Arctic Sky',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
-    metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'linear-gradient(180deg, #f0f0f0 0%, #cccccc 50%, #a0a0a0 100%)'
+    color: '#89f7fe',
+    gradientColors: ['#89f7fe', '#66a6ff', '#3a86ff'],
+    gradientDirection: 'vertical',
+    metalness: 0.9,
+    roughness: 0.15,
+    emissiveIntensity: 0.12,
+    envMapIntensity: 2.0,
+    previewGradient: 'linear-gradient(180deg, #89f7fe 0%, #66a6ff 50%, #3a86ff 100%)'
   },
   {
-    id: 'gradient5',
-    name: 'Gradient 5',
+    id: 'gradient-blossom',
+    name: 'Cherry Blossom',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
-    metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'radial-gradient(circle, #ffffff 0%, #cccccc 50%, #808080 100%)'
+    color: '#ff9a9e',
+    gradientColors: ['#ff9a9e', '#fad0c4', '#fbc2eb'],
+    gradientDirection: 'radial',
+    metalness: 0.5,
+    roughness: 0.35,
+    emissiveIntensity: 0.18,
+    envMapIntensity: 1.4,
+    previewGradient: 'radial-gradient(circle, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%)'
   },
   {
-    id: 'gradient6',
-    name: 'Gradient 6',
+    id: 'gradient-crystal',
+    name: 'Crystal Ice',
     category: 'gradient',
-    type: 'physical',
+    type: 'gradient',
     isPro: true,
-    color: '#cccccc', // Base color factor from JSON
+    color: '#a1c4fd',
+    gradientColors: ['#a1c4fd', '#c2e9fb', '#e0f4ff'],
+    gradientDirection: 'diagonal',
+    metalness: 0.95,
+    roughness: 0.1,
+    emissiveIntensity: 0.05,
+    clearcoat: 0.8,
+    clearcoatRoughness: 0.1,
+    envMapIntensity: 2.2,
+    previewGradient: 'linear-gradient(45deg, #a1c4fd 0%, #c2e9fb 50%, #e0f4ff 100%)'
+  },
+  {
+    id: 'gradient-neon',
+    name: 'Neon Dreams',
+    category: 'gradient',
+    type: 'gradient',
+    isPro: true,
+    color: '#ff00ff',
+    gradientColors: ['#ff00ff', '#00ffff', '#ffff00'],
+    gradientDirection: 'horizontal',
     metalness: 1.0,
-    roughness: 0.5, // Default since texture-based
-    envMapIntensity: 1.2,
-    previewGradient: 'linear-gradient(45deg, #e8e8e8 0%, #cccccc 50%, #999999 100%)'
+    roughness: 0.2,
+    emissiveIntensity: 0.25,
+    envMapIntensity: 2.5,
+    previewGradient: 'linear-gradient(90deg, #ff00ff 0%, #00ffff 50%, #ffff00 100%)'
+  },
+  {
+    id: 'gradient-lava',
+    name: 'Molten Lava',
+    category: 'gradient',
+    type: 'gradient',
+    isPro: true,
+    color: '#ff4500',
+    gradientColors: ['#ff4500', '#ff8c00', '#ffd700'],
+    gradientDirection: 'vertical',
+    metalness: 0.85,
+    roughness: 0.45,
+    emissiveIntensity: 0.3,
+    envMapIntensity: 1.6,
+    previewGradient: 'linear-gradient(180deg, #ff4500 0%, #ff8c00 50%, #ffd700 100%)'
   },
 
   // ===== GLASS MATERIALS =====
