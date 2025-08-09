@@ -165,9 +165,10 @@ export default function ImageUpload({
         setLoading(false);
         onUploadComplete?.({
           svgContent,
-          width: 0, // These values could be extracted from SVG if needed
-          height: 0,
+          paths: 0,
           colors: [],
+          originalSize: { width: 0, height: 0 },
+          optimizedSize: { width: 0, height: 0 },
         });
         
         return; // Exit early for SVG files
